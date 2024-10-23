@@ -8,7 +8,7 @@ export const Reserve: Component = () => {
   return (
     <div class="flex flex-row gap-1 flex-wrap">
       <For each={labData()} fallback={<>kontol</>}>
-        {(item) => <LabCard name={item.name} code={item.code} floor={item.floor} />}
+        {(item) => <LabCard id={item.id} name={item.name} code={item.code} floor={item.floor} />}
       </For>
     </div>
   )

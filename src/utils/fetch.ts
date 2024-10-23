@@ -18,19 +18,19 @@ export async function fetchSubjects(): Promise<Subject[]> {
   return response.json();
 }
 
-export async function fetchSchedules(source: Partial<{ id: number, day: number }>): Promise<Schedule[]> {
-  const response = await fetch('http://127.0.0.1:8000/subject/', {
+export async function fetchSchedules(source: { labId: number, day: number }): Promise<Schedule[]> {
+  const response = await fetch('http://127.0.0.1:8000/schedule/filter', {
     headers: {
       "Content-Type": "application/json",
     },
-    method: "GET",
+    method: "POST",
     body: JSON.stringify(source)
   });
   return response.json();
 }
 
 export async function fetchReserves(): Promise<Reserve[]> {
-  const response = await fetch('http://127.0.0.1:8000/subject/', {
+  const response = await fetch('http://127.0.0.1:8000/reserve/', {
     headers: {
       "Content-Type": "application/json",
     },
