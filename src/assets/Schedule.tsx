@@ -8,6 +8,15 @@ const [scheduleData, { mutate, refetch }] = createResource(query, fetchSchedules
 export const Schedule: Component = () => {
   return (
     <div class="flex flex-row gap-1 flex-wrap">
+      <For each={scheduleData()} fallback={<></>}>
+        {(item) => <ScheduleCard
+          timeslot={item.timeslot}
+          day={item.day}
+          length={item.length}
+          subjectId={item.subjectId}
+          labId={item.labId}
+        />}
+      </For>
     </div>
   )
 }

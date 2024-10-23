@@ -14,6 +14,11 @@ export const LabCard: Component<Omit<Lab, 'id'>> = (props) => {
 export const ScheduleCard: Component<Omit<Schedule, 'id'>> = (props) => {
   return (
     <div class="flex flex-col bg-red-200 w-64 rounded-lg px-2 py-1">
+      <span>{props.timeslot}</span>
+      <span>{props.day}</span>
+      <span>{props.length}</span>
+      <span>{props.subjectId}</span>
+      <span>{props.labId}</span>
     </div>
   )
 }
