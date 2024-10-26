@@ -2,7 +2,7 @@ import { Component, createResource, For } from "solid-js";
 import { LabCard } from "./Card";
 import { fetchLabs } from "../utils/fetch";
 
-const [labData, { mutate, refetch }] = createResource(fetchLabs);
+const [labData] = createResource(fetchLabs);
 
 export const Reserve: Component = () => {
   return (

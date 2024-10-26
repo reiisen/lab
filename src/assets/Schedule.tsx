@@ -1,6 +1,5 @@
 import { Component, createResource, createSignal, For, Match, Show, Switch } from "solid-js";
 import { fetchSchedules } from "../utils/fetch";
-import { ScheduleCard } from "./Card"
 import { useParams } from "@solidjs/router";
 import { Loading } from "./Loading";
 import { Error } from "./Error";
@@ -15,14 +14,18 @@ export const Schedule: Component = () => {
         <Switch>
           <Match when={scheduleData.state === "ready"}>
             <For each={scheduleData()} fallback={<></>}>
-              {(item) => <ScheduleCard
-                id={item.id}
-                timeslot={item.timeslot}
-                day={item.day}
-                length={item.length}
-                subjectId={item.subjectId}
-                labId={item.labId}
-              />}
+              {(item) => {
+                return (
+                  <div>
+                    {item.id}
+                    {item.subjectId}
+                    {item.labId}
+                    {item.length}
+                    {item.day}
+                    {item.timeslot}
+                  </div>
+                )
+              }}
             </For>
           </Match>
           <Match when={scheduleData.error}>

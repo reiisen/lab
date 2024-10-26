@@ -29,11 +29,13 @@ export async function fetchSchedules(source: { labId: number, day: number }): Pr
   return response.json();
 }
 
-export async function fetchReserves(): Promise<Reserve[]> {
-  const response = await fetch('http://127.0.0.1:8000/reserve/', {
+export async function fetchReserves(source: { labId: number, day: number }): Promise<Reserve[]> {
+  const response = await fetch('http://127.0.0.1:8000/schedule/filter', {
     headers: {
       "Content-Type": "application/json",
     },
+    method: "POST",
+    body: JSON.stringify(source)
   });
   return response.json();
 }

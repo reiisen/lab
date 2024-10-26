@@ -5,15 +5,32 @@ export interface Lab {
   floor: number;
 }
 
+export type Timeslot = {
+  length: number
+  day: number
+  timeslot: number
+}
+
+export type HasTimeslot<T> = T & Timeslot
+
 export interface Reserve {
   id: number;
-  timeslot: number;
-  day: number;
-  length: number;
   labId: number;
   reason: string;
   status: "PENDING" | "ACTIVE" | "CONCLUDED" | "CANCELLED";
   userId: number;
+  length: number
+  day: number
+  timeslot: number
+}
+
+export interface Schedule {
+  id: number;
+  subjectId: number;
+  labId: number;
+  length: number
+  day: number
+  timeslot: number
 }
 
 export interface Subject {
@@ -23,11 +40,4 @@ export interface Subject {
   dosen: string;
 }
 
-export interface Schedule {
-  id: number;
-  timeslot: number;
-  day: number;
-  length: number;
-  subjectId: number;
-  labId: number;
-}
+

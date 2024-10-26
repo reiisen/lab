@@ -1,5 +1,5 @@
 import { Component } from "solid-js";
-import { Lab, Schedule } from "../utils/types";
+import { HasTimeslot, Lab, Reserve, Schedule, Timeslot } from "../utils/types";
 
 export const LabCard: Component<Lab> = (props) => {
   return (
@@ -13,14 +13,42 @@ export const LabCard: Component<Lab> = (props) => {
   )
 }
 
-export const ScheduleCard: Component<Schedule> = (props) => {
+export const Empty: Component<{}> = () => {
   return (
-    <div class="flex flex-col bg-red-200 rounded-lg px-2 py-1">
-      <span>Timeslot: {props.timeslot}</span>
-      <span>Day: {props.day}</span>
-      <span>Length: {props.length}</span>
-      <span>SubjectId: {props.subjectId}</span>
-      <span>LabId: {props.labId}</span>
+    <></>
+  )
+}
+
+// const TimeslotCard = <T extends Timeslot,>(props: {
+//   child?: Component<{ attributes: HasTimeslot<T> }>,
+//   childProps?: HasTimeslot<T>
+// }) => {
+//   return (
+//     <div class="flex flex-col">
+//       {props.child && props.childProps ? <props.child attributes={props.childProps} /> : <Empty />}
+//     </div>
+//   )
+// }
+//
+
+const TimeslotCard = <T extends Timeslot,>(props: HasTimeslot<T>) => {
+  const ChildComponent: Component<HasTimeslot<T>> = (props) => {
+    return (
+      <>
+        {props.length}
+        {props.day}
+        {props.timeslot}
+      </>
+    )
+  }
+  return (
+    <div class="flex flex-col">
+      <ChildComponent {...props} />
     </div>
   )
 }
+
+/**
+ * Example usage?
+ * <TimeslotCard child={**the time component**} childProps={**its properties**}
+ * */
