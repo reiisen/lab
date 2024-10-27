@@ -6,7 +6,7 @@ import { Error } from "./Error";
 import { ScheduleGrid } from "./Grid";
 
 export const Schedule: Component = () => {
-  const [param] = createSignal({ labId: parseInt(useParams().id), day: new Date().getDay() + 1 });
+  const [param] = createSignal({ labId: parseInt(useParams().id), day: new Date().getDay() - 1 });
   const [scheduleData] = createResource(param(), fetchSchedules);
   const [reserveData] = createResource(param(), fetchReserves);
   return (
