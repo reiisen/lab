@@ -1,27 +1,35 @@
 import { Component, For } from "solid-js"
 import type { Reserve, Schedule } from "../utils/types"
+import { EmptyTimeslotCard, TimeslotCard } from "./Card"
 
-const Empty: Component = () => {
+export const ScheduleGrid: Component<{ schedules: Schedule[], reserves: Reserve[] }> = (props) => {
+  type Content = { id: number, fill: Schedule | Reserve | undefined };
+  console.log(props.schedules);
+  console.log(props.reserves);
+  const map = Array<Content>(11);
+  for (let i = 0; i < map.length; i++) {
+    map[i] = { id: i, fill: undefined };
+  }
+  props.schedules.forEach((value) => {
+    for (let i = 0; i < value.length; i++) {
+      map[value.timeslot + i] = { id: map[value.timeslot + i].id, fill: value };
+    }
+  });
+  props.reserves.forEach((value) => {
+    for (let i = 0; i < value.length; i++) {
+      map[value.timeslot + i] = { id: map[value.timeslot + i].id, fill: value };
+    }
+  });
+  console.log(map);
   return (
-    <></>
+    <div>
+      <For each={map}>
+        {(item) => {
+          return item.fill ?
+            <TimeslotCard<typeof item.fill> {...item.fill} timeslot={item.id} /> :
+            <EmptyTimeslotCard timeslot={item.id} day={new Date().getDay()} />
+        }}
+      </For>
+    </div>
   )
 }
-
-// export const TimeGrid: Component<{ schedules: Schedule[], reserves: Reserve[] }> = (props) => {
-//   const map = Array<Component<any>>(10).fill(Empty);
-//   props.schedules.forEach((value) => {
-//     map[value.timeslot] = ;
-//   });
-//   props.reserves.forEach((value) => {
-//     map[value.timeslot] = value;
-//   });
-//   return (
-//     <div>
-//       <For each={map}>
-//         {(item) => {
-//           return <></>
-//         }}
-//       </For>
-//     </div>
-//   )
-// }

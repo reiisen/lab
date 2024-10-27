@@ -19,25 +19,40 @@ export const Empty: Component<{}> = () => {
   )
 }
 
-// const TimeslotCard = <T extends Timeslot,>(props: {
-//   child?: Component<{ attributes: HasTimeslot<T> }>,
-//   childProps?: HasTimeslot<T>
-// }) => {
-//   return (
-//     <div class="flex flex-col">
-//       {props.child && props.childProps ? <props.child attributes={props.childProps} /> : <Empty />}
-//     </div>
-//   )
-// }
-//
+function timeslotToString(timeslot: number) {
+  switch (timeslot) {
+    case 0:
+      return "07:00 - 08:00";
+    case 1:
+      return "08:00 - 08:00";
+    case 2:
+      return "09:00 - 10:00";
+    case 3:
+      return "10:00 - 11:00";
+    case 4:
+      return "11:00 - 12:00";
+    case 5:
+      return "12:00 - 13:00";
+    case 6:
+      return "13:00 - 14:00";
+    case 7:
+      return "14:00 - 15:00";
+    case 8:
+      return "15:00 - 16:00";
+    case 9:
+      return "16:00 - 17:00";
+    case 10:
+      return "17:00 - 18:00";
+    default:
+      return "INVALID TIMESLOT";
+  }
+}
 
-const TimeslotCard = <T extends Timeslot,>(props: HasTimeslot<T>) => {
+export const TimeslotCard = <T extends Timeslot,>(props: HasTimeslot<T>) => {
   const ChildComponent: Component<HasTimeslot<T>> = (props) => {
     return (
       <>
-        {props.length}
-        {props.day}
-        {props.timeslot}
+        <span>Timeslot: {timeslotToString(props.timeslot)} UNAVAILABLE</span>
       </>
     )
   }
@@ -48,7 +63,10 @@ const TimeslotCard = <T extends Timeslot,>(props: HasTimeslot<T>) => {
   )
 }
 
-/**
- * Example usage?
- * <TimeslotCard child={**the time component**} childProps={**its properties**}
- * */
+export const EmptyTimeslotCard: Component<{ timeslot: number, day: number }> = (props) => {
+  return (
+    <div>
+      <span>Timeslot: {timeslotToString(props.timeslot)} AVAILABLE</span>
+    </div>
+  )
+}
