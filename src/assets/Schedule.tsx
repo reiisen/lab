@@ -21,7 +21,6 @@ export const Schedule: Component = () => {
   const [reserveData] = createResource(param(), fetchReserves);
   return (
     <div class="flex flex-col items-center">
-      <span class="text-lg font-semibold text-white mb-4">Schedule</span>
       <Switch>
         <Match
           when={scheduleData.state === "ready" && reserveData.state === "ready"}

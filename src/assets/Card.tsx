@@ -24,19 +24,15 @@ export const TimeslotCard = <T extends Timeslot>(props: HasTimeslot<T>) => {
   const ChildComponent: Component<HasTimeslot<T>> = (props) => {
     return (
       <>
-        <span class="text-gray-300">
-          Timeslot: {timeslotToString(props.timeslot)} <br />
-          <span class="text-red-500 font-semibold">UNAVAILABLE</span>
-        </span>
+        <span class="text-gray-300">Timeslot: {timeslotToString(props.timeslot)}</span>
+        <span class="text-red-500 font-semibold">UNAVAILABLE</span>
       </>
     );
   };
   return (
     <Dialog>
-      <Dialog.Trigger>
-        <div class="flex flex-col bg-gray-800 shadow-lg h-32 rounded-lg px-4 py-2">
-          <ChildComponent {...props} />
-        </div>
+      <Dialog.Trigger class="text-left flex flex-col bg-gray-800 shadow-lg h-32 rounded-lg px-4 py-2">
+        <ChildComponent {...props} />
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay class="dialog__overlay" />

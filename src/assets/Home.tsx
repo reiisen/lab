@@ -2,9 +2,9 @@ import { Component } from "solid-js";
 
 export const Home: Component = () => {
   return (
-    <div class="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-gray-100">
-      <h1 class="text-4xl font-bold mb-4">"Welcome to the Laboratory"</h1>
-      <p class="text-lg text-gray-400">Discover and reserve labs with ease!</p>
-    </div>
+    <>
+      <h1 class="text-4xl text-white font-bold mb-4">Welcome to USD Labo</h1>
+      <a href="/reserve" class="text-lg text-gray-400">Click here to start!</a>
+    </>
   );
 };

@@ -10,7 +10,7 @@ const App: Component = () => {
   return (
     <>
       <Navbar />
-      <div class="min-h-screen mt-6">
+      <div class="bg-gray-900 min-h-[95vh] flex flex-col items-center justify-center">
         <Router>
           <Route path="/" component={Home} />
           <Route path="/reserve" component={Reserve} />
