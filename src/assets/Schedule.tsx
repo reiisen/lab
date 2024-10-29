@@ -5,6 +5,7 @@ import {
   Match,
   Switch,
 } from "solid-js";
+
 import { fetchReserves, fetchSchedules } from "../utils/fetch";
 import { useParams } from "@solidjs/router";
 import { Loading } from "./Loading";

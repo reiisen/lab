@@ -1,5 +1,6 @@
 import { Component } from "solid-js";
 import { HasTimeslot, Lab, Reserve, Schedule, Timeslot } from "../utils/types";
+import { Dialog } from "@kobalte/core/dialog";
 
 export const LabCard: Component<Lab> = (props) => {
   return (
@@ -31,9 +32,31 @@ export const TimeslotCard = <T extends Timeslot>(props: HasTimeslot<T>) => {
     );
   };
   return (
-    <div class="flex flex-col bg-gray-800 shadow-lg h-32 rounded-lg px-4 py-2">
-      <ChildComponent {...props} />
-    </div>
+    <Dialog>
+      <Dialog.Trigger>
+        <div class="flex flex-col bg-gray-800 shadow-lg h-32 rounded-lg px-4 py-2">
+          <ChildComponent {...props} />
+        </div>
+      </Dialog.Trigger>
+      <Dialog.Portal>
+        <Dialog.Overlay class="dialog__overlay" />
+        <div class="dialog__positioner">
+          <Dialog.Content class="dialog__content">
+            <div class="dialog__header">
+              <Dialog.Title class="dialog__title">Information</Dialog.Title>
+              <Dialog.CloseButton class="dialog__close-button">
+                <button>X</button>
+              </Dialog.CloseButton>
+            </div>
+            <Dialog.Description class="dialog__description flex flex-col w-48">
+              <span>Timeslot: {props.timeslot}</span>
+              <span>Day: {props.day}</span>
+              <span>Length: {props.length}</span>
+            </Dialog.Description>
+          </Dialog.Content>
+        </div>
+      </Dialog.Portal>
+    </Dialog>
   );
 };
 
