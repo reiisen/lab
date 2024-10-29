@@ -1,5 +1,5 @@
-import { Component } from "solid-js"
-import { Navbar } from "./assets/Navbar"
+import { Component } from "solid-js";
+import { Navbar } from "./assets/Navbar";
 import { Footer } from "./assets/Footer";
 import { Router, Route } from "@solidjs/router";
 import { Home } from "./assets/Home";
@@ -10,14 +10,17 @@ const App: Component = () => {
   return (
     <>
       <Navbar />
-      <Router>
-        <Route path="/" component={Home} />
-        <Route path="/reserve" component={Reserve} />
-        <Route path="/schedule/:id" component={Schedule} />
-      </Router>
+      <div class="min-h-screen mt-6">
+        <Router>
+          <Route path="/" component={Home} />
+          <Route path="/reserve" component={Reserve} />
+          <Route path="/schedule/:id" component={Schedule} />
+        </Router>
+      </div>
+
       <Footer />
     </>
   );
-}
+};
 
 export default App;

@@ -3,51 +3,68 @@ import { HasTimeslot, Lab, Reserve, Schedule, Timeslot } from "../utils/types";
 
 export const LabCard: Component<Lab> = (props) => {
   return (
-    <a href={`/schedule/${props.id}`}>
-      <div class="flex flex-1 flex-col bg-white h-36 rounded-lg px-3 py-2">
-        <span class="text-xl font-bold">{props.name}</span>
-        <span>{props.code}</span>
-        <span>Lantai {props.floor}</span>
-        <span class="text-md self-end mt-auto">Reservation Available</span>
+    <a
+      href={`/schedule/${props.id}`}
+      class="block hover:scale-105 transform transition duration-300"
+    >
+      <div class="flex flex-1 flex-col bg-gray-800 h-36 rounded-lg p-4 shadow-lg hover:shadow-xl transition">
+        <span class="text-xl font-bold text-gray-100 mb-1">{props.name}</span>
+        <span class="text-gray-300 text-sm">{props.code}</span>
+        <span class="text-gray-300 text-sm">Lantai {props.floor}</span>
+        <span class="text-sm text-green-500 font-semibold self-end mt-auto">
+          Reservation Available
+        </span>
       </div>
     </a>
-  )
-}
+  );
+};
 
-export const TimeslotCard = <T extends Timeslot,>(props: HasTimeslot<T>) => {
+export const TimeslotCard = <T extends Timeslot>(props: HasTimeslot<T>) => {
   const ChildComponent: Component<HasTimeslot<T>> = (props) => {
     return (
       <>
-        <span>Timeslot: {timeslotToString(props.timeslot)} <br />UNAVAILABLE</span>
+        <span class="text-gray-300">
+          Timeslot: {timeslotToString(props.timeslot)} <br />
+          <span class="text-red-500 font-semibold">UNAVAILABLE</span>
+        </span>
       </>
-    )
-  }
+    );
+  };
   return (
-    <div class="flex flex-col bg-white shadow-lg h-32 rounded-lg px-2 py-1">
+    <div class="flex flex-col bg-gray-800 shadow-lg h-32 rounded-lg px-4 py-2">
       <ChildComponent {...props} />
     </div>
-  )
-}
+  );
+};
 
 export const ReservedCard: Component<Reserve> = (props) => {
   return (
-    <a href="/lol"><TimeslotCard<typeof props> {...props} /></a>
-  )
-}
+    <a href="/lol">
+      <TimeslotCard<typeof props> {...props} />
+    </a>
+  );
+};
 
 export const ScheduleCard: Component<Schedule> = (props) => {
   return (
-    <a href="/iidx"><TimeslotCard<typeof props> {...props} /></a>
-  )
-}
+    <a href="/iidx">
+      <TimeslotCard<typeof props> {...props} />
+    </a>
+  );
+};
 
-export const EmptyTimeslotCard: Component<{ timeslot: number, day: number }> = (props) => {
+export const EmptyTimeslotCard: Component<{ timeslot: number; day: number }> = (
+  props
+) => {
   return (
-    <div class="flex flex-col bg-white shadow-lg rounded-lg px-2 py-1">
-      <span>Timeslot: {timeslotToString(props.timeslot)} <br />AVAILABLE</span>
+    <div class="flex flex-col bg-gray-800 shadow-lg h-32 rounded-lg px-4 py-2">
+      <span class="text-gray-300">
+        Timeslot: {timeslotToString(props.timeslot)} <br />
+        <span class="text-green-500 font-semibold">AVAILABLE</span>
+      </span>
     </div>
-  )
-}
+  );
+};
 
 function timeslotToString(timeslot: number) {
   switch (timeslot) {
