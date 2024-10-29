@@ -76,3 +76,15 @@ textarea:not([rows]) {
   scroll-margin-block: 5ex;
 }
 
+/**
+* DO NOT MODIFY ANY OF THE CSS ABOVE
+* You can start editing vanilla css down below
+* */
+
+* {
+  font-family: "Noto Sans";
+}
+
+body {
+  background-color: Lavender;
+}

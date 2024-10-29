@@ -1,4 +1,4 @@
-import { Component, createResource, createSignal, For, Match, Show, Switch } from "solid-js";
+import { Component, createResource, createSignal, Match, Switch } from "solid-js";
 import { fetchReserves, fetchSchedules } from "../utils/fetch";
 import { useParams } from "@solidjs/router";
 import { Loading } from "./Loading";
@@ -12,19 +12,17 @@ export const Schedule: Component = () => {
   return (
     <div>
       <span>Schedule</span>
-      <div class="flex flex-row gap-1 flex-wrap">
-        <Switch>
-          <Match when={scheduleData.state === "ready" && reserveData.state === "ready"}>
-            <ScheduleGrid schedules={scheduleData()!} reserves={reserveData()!} />
-          </Match>
-          <Match when={scheduleData.loading || reserveData.loading}>
-            <Loading />
-          </Match>
-          <Match when={scheduleData.error || reserveData.error}>
-            <Error />
-          </Match>
-        </Switch>
-      </div>
+      <Switch>
+        <Match when={scheduleData.state === "ready" && reserveData.state === "ready"}>
+          <ScheduleGrid schedules={scheduleData()!} reserves={reserveData()!} />
+        </Match>
+        <Match when={scheduleData.loading || reserveData.loading}>
+          <Loading />
+        </Match>
+        <Match when={scheduleData.error || reserveData.error}>
+          <Error />
+        </Match>
+      </Switch>
     </div>
   )
 }
