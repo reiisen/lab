@@ -30,12 +30,19 @@ export async function fetchSchedules(source: { labId: number, day: number }): Pr
 }
 
 export async function fetchReserves(source: { labId: number, day: number }): Promise<Reserve[]> {
+  const filter = {
+    labId: source.labId,
+    day: source.day,
+    status: {
+      in: ["PENDING", "ACTIVE"]
+    }
+  }
   const response = await fetch('http://127.0.0.1:8000/reserve/filter', {
     headers: {
       "Content-Type": "application/json",
     },
     method: "POST",
-    body: JSON.stringify(source)
+    body: JSON.stringify(filter)
   });
   return response.json();
 }

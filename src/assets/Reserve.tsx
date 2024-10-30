@@ -1,5 +1,4 @@
-import { Component, createResource, For } from "solid-js";
-import { LabCard } from "./Card";
+import { Component, createResource } from "solid-js";
 import { fetchLabs } from "../utils/fetch";
 import { LabGrid } from "./Grid";
 

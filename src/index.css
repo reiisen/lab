@@ -190,3 +190,8 @@ textarea:not([rows]) {
     transform: scale(0.96);
   }
 }
+
+.gradient {
+  background: rgb(10,10,10);
+  background: linear-gradient(343deg, rgba(10,10,10,1) 0%, rgba(32,23,51,1) 100%);
+}

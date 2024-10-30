@@ -11,7 +11,8 @@ export type Timeslot = {
   timeslot: number
 }
 
-export type HasTimeslot<T> = T & Timeslot
+export type HasTimeslot<T> = T & Timeslot;
+export type HasIndex<T> = T & { index: number };
 
 export interface Reserve {
   id: number;
