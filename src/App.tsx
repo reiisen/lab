@@ -6,6 +6,7 @@ import { Home } from "./assets/Home";
 import { Reserve } from "./assets/Reserve";
 import { Schedule } from "./assets/Schedule";
 import { Crud } from "./assets/Crud";
+import { AppHistory } from "./assets/History";
 
 const App: Component = () => {
   const path = window.location.pathname;
@@ -19,6 +20,7 @@ const App: Component = () => {
             <Route path="/reserve" component={Reserve} />
             <Route path="/schedule/:id" component={Schedule} />
             <Route path="/dashboard" component={Crud} />
+            <Route path="/history" component={AppHistory} />
           </Router>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { Component } from "solid-js";
 import { HasIndex, HasTimeslot, Lab, Reserve, Schedule, Subject, Timeslot } from "../utils/types";
 import { Dialog } from "@kobalte/core/dialog";
+import { TextField } from "@kobalte/core/text-field";
 
 export const cardStyle = "text-left flex flex-1 flex-col bg-slate-100 border-2 min-h-44 border-white rounded-lg p-4 shadow-md text-slate-700";
 
@@ -100,12 +101,38 @@ export const EmptyTimeslotCard: Component<{ timeslot: number; day: number }> = (
   props
 ) => {
   return (
-    <div class={cardStyle}>
-      <span class="">
-        Timeslot: {timeslotToString(props.timeslot)} <br />
-        <span class="text-green-500 font-semibold">AVAILABLE</span>
-      </span>
-    </div>
+    <Dialog>
+      <Dialog.Trigger class={cardStyle}>
+        <span class="">
+          Timeslot: {timeslotToString(props.timeslot)} <br />
+          <span class="text-green-500 font-semibold">AVAILABLE</span>
+        </span>
+      </Dialog.Trigger>
+      <Dialog.Portal>
+        <Dialog.Overlay class="dialog__overlay" />
+        <div class="dialog__positioner">
+          <Dialog.Content class="dialog__content">
+            <div class="dialog__header">
+              <Dialog.Title class="dialog__title">Information</Dialog.Title>
+              <Dialog.CloseButton class="dialog__close-button">
+                <button>X</button>
+              </Dialog.CloseButton>
+            </div>
+            <Dialog.Description class="dialog__description flex flex-col w-fit">
+              <TextField class="text-field">
+                <TextField.Label class="text-field__label">Nama</TextField.Label>
+                <TextField.Input class="text-field__input" />
+              </TextField>
+              <TextField class="text-field">
+                <TextField.Label class="text-field__label">Alasan</TextField.Label>
+                <TextField.Input class="text-field__input" />
+              </TextField>
+              <button>Submit</button>
+            </Dialog.Description>
+          </Dialog.Content>
+        </div>
+      </Dialog.Portal>
+    </Dialog>
   );
 };
 

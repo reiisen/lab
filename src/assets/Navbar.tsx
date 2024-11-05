@@ -21,12 +21,6 @@ export const Navbar: Component = () => {
       >
         History
       </a>
-      <a
-        href="/dashboard"
-        class="hover:opacity-50 px-4 rounded transition"
-      >
-        Dashboard
-      </a>
     </div>
   );
 };
