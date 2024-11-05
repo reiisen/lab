@@ -1,17 +1,18 @@
 import { Component, For, Index, JSX } from "solid-js";
-import type { Lab, Reserve, Schedule } from "../utils/types";
-import { EmptyTimeslotCard, LabCard, ReservedCard, ScheduleCard } from "./Card";
+import type { Lab, Reserve, Schedule, ScheduleWithSubject, Subject } from "../utils/types";
+import { EmptyTimeslotCard, LabCard, ReservedCard, RestrictedTimeslotCard, ScheduleCard } from "./Card";
+
 
 export const LabGrid: Component<{ labs: Lab[] }> = (props) => {
   return (
-    <div class="grid lg:grid-cols-4 grid-cols-3 gap-3 px-8 w-[1366px] m-auto">
+    <div class="grid lg:grid-cols-4 grid-cols-3 gap-3 px-8 m-auto">
       <For each={props.labs}>{(item) => <LabCard {...item} />}</For>
     </div>
   );
 };
 
 export const ScheduleGrid: Component<{
-  schedules: Schedule[];
+  schedules: ScheduleWithSubject[];
   reserves: Reserve[];
 }> = (props) => {
   const map = Array<JSX.Element>(11);
@@ -26,16 +27,13 @@ export const ScheduleGrid: Component<{
     }
   });
   return (
-    <div class="grid lg:grid-cols-4 grid-cols-3 gap-4 px-8 w-[1200px] m-auto">
+    <div class="grid lg:grid-cols-4 grid-cols-3 w-3/5 gap-3 px-8 m-auto">
       <Index each={map}>
         {(value, index) => {
-          const object = value();
-          return object ? object : <EmptyTimeslotCard day={new Date().getDay()} timeslot={index} />
+          return value() ? value() : <EmptyTimeslotCard day={new Date().getDay()} timeslot={index} />
         }}
       </Index>
-      <div class="flex flex-row justify-end items-end rounded-xl shadow-lg bg-purple-600 text-white px-4 py-2">
-        <span class="font-bold">RESTRICTED</span>
-      </div>
+      <RestrictedTimeslotCard />
     </div>
   );
 };

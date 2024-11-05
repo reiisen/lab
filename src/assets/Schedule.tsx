@@ -6,7 +6,7 @@ import {
   Switch,
 } from "solid-js";
 
-import { fetchReserves, fetchSchedules } from "../utils/fetch";
+import { readReserves, readSchedules } from "../utils/fetch";
 import { useParams } from "@solidjs/router";
 import { Loading } from "./Loading";
 import { Error } from "./Error";
@@ -17,23 +17,21 @@ export const Schedule: Component = () => {
     labId: parseInt(useParams().id),
     day: new Date().getDay() - 1,
   });
-  const [scheduleData] = createResource(param(), fetchSchedules);
-  const [reserveData] = createResource(param(), fetchReserves);
+  const [scheduleData] = createResource(param(), readSchedules);
+  const [reserveData] = createResource(param(), readReserves);
   return (
-    <div class="flex flex-col items-center">
-      <Switch>
-        <Match
-          when={scheduleData.state === "ready" && reserveData.state === "ready"}
-        >
-          <ScheduleGrid schedules={scheduleData()!} reserves={reserveData()!} />
-        </Match>
-        <Match when={scheduleData.loading || reserveData.loading}>
-          <Loading />
-        </Match>
-        <Match when={scheduleData.error || reserveData.error}>
-          <Error />
-        </Match>
-      </Switch>
-    </div>
+    <Switch>
+      <Match
+        when={scheduleData.state === "ready" && reserveData.state === "ready"}
+      >
+        <ScheduleGrid schedules={scheduleData()!} reserves={reserveData()!} />
+      </Match>
+      <Match when={scheduleData.loading || reserveData.loading}>
+        <Loading />
+      </Match>
+      <Match when={scheduleData.error || reserveData.error}>
+        <Error />
+      </Match>
+    </Switch>
   );
 };

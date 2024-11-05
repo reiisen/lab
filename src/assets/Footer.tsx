@@ -2,7 +2,7 @@ import { Component } from "solid-js";
 
 export const Footer: Component = () => {
   return (
-    <div class="text-zinc-100 flex flex-row gap-6 h-[5vh] px-5 bg-black shadow-md">
+    <div class="text-zinc-100 flex flex-row gap-6 px-5 bg-black shadow-md">
       <span class="text-2xl">Project Labo</span>
       <a
         href="/"

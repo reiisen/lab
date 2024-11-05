@@ -1,16 +1,18 @@
 import { Component } from "solid-js";
-import { HasIndex, HasTimeslot, Lab, Reserve, Schedule, Timeslot } from "../utils/types";
+import { HasIndex, HasTimeslot, Lab, Reserve, Schedule, Subject, Timeslot } from "../utils/types";
 import { Dialog } from "@kobalte/core/dialog";
+
+export const cardStyle = "text-left flex flex-1 flex-col bg-slate-100 border-2 min-h-44 border-white rounded-lg p-4 shadow-md text-slate-700";
 
 export const LabCard: Component<Lab> = (props) => {
   return (
     <a
       href={`/schedule/${props.id}`}
     >
-      <div class="flex flex-1 flex-col bg-zinc-800 h-44 rounded-lg p-4 shadow-xl hover:shadow-xl transition">
-        <span class="text-xl font-bold text-gray-100 mb-1">{props.name}</span>
-        <span class="text-gray-300 text-sm">{props.code}</span>
-        <span class="text-gray-300 text-sm">Lantai {props.floor}</span>
+      <div class={cardStyle}>
+        <span class="text-xl font-bold mb-1">{props.name}</span>
+        <span class="text-sm">{props.code}</span>
+        <span class="text-sm">Lantai {props.floor}</span>
         <span class="text-sm text-green-500 font-semibold self-end mt-auto">
           Available
         </span>
@@ -23,7 +25,7 @@ export const TimeslotCard = <T extends Timeslot>(props: HasTimeslot<T>) => {
   const ChildComponent: Component<HasTimeslot<T>> = (props) => {
     return (
       <>
-        <span class="text-gray-300">Timeslot: {timeslotToString(props.timeslot)}</span>
+        <span class="">Timeslot: {timeslotToString(props.timeslot)}</span>
         <span class="text-red-500 font-semibold">UNAVAILABLE</span>
       </>
     );
@@ -33,10 +35,14 @@ export const TimeslotCard = <T extends Timeslot>(props: HasTimeslot<T>) => {
   );
 };
 
+export const Redux = (): Function => {
+  return Redux();
+}
+
 export const ReservedCard = (props: HasIndex<Reserve>) => {
   return (
     <Dialog>
-      <Dialog.Trigger class="text-left flex flex-1 flex-col bg-zinc-800 h-44 rounded-lg p-4 shadow-xl">
+      <Dialog.Trigger class={cardStyle}>
         <TimeslotCard<typeof props> {...props} timeslot={props.index} />
       </Dialog.Trigger>
       <Dialog.Portal>
@@ -49,8 +55,8 @@ export const ReservedCard = (props: HasIndex<Reserve>) => {
                 <button>X</button>
               </Dialog.CloseButton>
             </div>
-            <Dialog.Description class="dialog__description flex flex-col w-48">
-              <span>Reserved by: {props.userId}</span>
+            <Dialog.Description class="dialog__description flex flex-col w-fit">
+              <span>Reserved by: {props.name}</span>
               <span>Reason: {props.reason}</span>
               <span>From: {`${timeToString(props.timeslot)} - ${timeToString(props.timeslot + props.length)}`}</span>
             </Dialog.Description>
@@ -61,10 +67,11 @@ export const ReservedCard = (props: HasIndex<Reserve>) => {
   );
 };
 
-export const ScheduleCard = (props: HasIndex<Schedule>) => {
+
+export const ScheduleCard = (props: HasIndex<Schedule & { subject: Subject }>) => {
   return (
     <Dialog>
-      <Dialog.Trigger class="text-left flex flex-1 flex-col bg-zinc-800 h-44 rounded-lg p-4 shadow-xl">
+      <Dialog.Trigger class={cardStyle}>
         <TimeslotCard<typeof props> {...props} timeslot={props.index} />
       </Dialog.Trigger>
       <Dialog.Portal>
@@ -77,8 +84,9 @@ export const ScheduleCard = (props: HasIndex<Schedule>) => {
                 <button>X</button>
               </Dialog.CloseButton>
             </div>
-            <Dialog.Description class="dialog__description flex flex-col w-48">
-              <span>Reserved for: {props.subjectId}</span>
+            <Dialog.Description class="dialog__description flex flex-col w-fit">
+              <span>Reserved for: {props.subject.name}</span>
+              <span>Dosen: {props.subject.dosen}</span>
               <span>From: {`${timeToString(props.timeslot)} - ${timeToString(props.timeslot + props.length)}`}</span>
             </Dialog.Description>
           </Dialog.Content>
@@ -92,14 +100,24 @@ export const EmptyTimeslotCard: Component<{ timeslot: number; day: number }> = (
   props
 ) => {
   return (
-    <div class="text-left flex flex-1 flex-col bg-zinc-800 h-44 rounded-lg p-4 shadow-xl">
-      <span class="text-gray-300">
+    <div class={cardStyle}>
+      <span class="">
         Timeslot: {timeslotToString(props.timeslot)} <br />
         <span class="text-green-500 font-semibold">AVAILABLE</span>
       </span>
     </div>
   );
 };
+
+export const RestrictedTimeslotCard: Component = () => {
+  return (
+    <div class={cardStyle}>
+      <span class="">
+        <span class="text-purple-500 font-semibold">RESTRICTED</span>
+      </span>
+    </div>
+  )
+}
 
 function timeslotToString(timeslot: number) {
   switch (timeslot) {

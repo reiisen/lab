@@ -1,8 +1,8 @@
 import { Component, createResource } from "solid-js";
-import { fetchLabs } from "../utils/fetch";
+import { readLabs } from "../utils/fetch";
 import { LabGrid } from "./Grid";
 
-const [labData] = createResource(fetchLabs);
+export const [labData] = createResource(readLabs);
 
 export const Reserve: Component = () => {
   return (

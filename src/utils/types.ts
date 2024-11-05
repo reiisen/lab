@@ -13,13 +13,14 @@ export type Timeslot = {
 
 export type HasTimeslot<T> = T & Timeslot;
 export type HasIndex<T> = T & { index: number };
+export type ScheduleWithSubject = Schedule & { subject: Subject };
 
 export interface Reserve {
   id: number;
   labId: number;
+  name: string;
   reason: string;
   status: "PENDING" | "ACTIVE" | "CONCLUDED" | "CANCELLED";
-  userId: number;
   length: number
   day: number
   timeslot: number
