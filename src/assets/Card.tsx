@@ -1,14 +1,15 @@
 import { Component } from "solid-js";
-import { HasIndex, HasTimeslot, Lab, Reserve, Schedule, Subject, Timeslot } from "../utils/types";
+import { WithIndex, WithTimeslot, Lab, Reserve, Course, Subject, Timeslot } from "../utils/types";
 import { Dialog } from "@kobalte/core/dialog";
 import { TextField } from "@kobalte/core/text-field";
 
 export const cardStyle = "text-left flex flex-1 flex-col bg-slate-100 border-2 min-h-44 border-white rounded-lg p-4 shadow-md text-slate-700";
 
+
 export const LabCard: Component<Lab> = (props) => {
   return (
     <a
-      href={`/schedule/${props.id}`}
+      href={`/course/${props.id}`}
     >
       <div class={cardStyle}>
         <span class="text-xl font-bold mb-1">{props.name}</span>
@@ -22,8 +23,8 @@ export const LabCard: Component<Lab> = (props) => {
   );
 };
 
-export const TimeslotCard = <T extends Timeslot>(props: HasTimeslot<T>) => {
-  const ChildComponent: Component<HasTimeslot<T>> = (props) => {
+export const TimeslotCard = <T extends Timeslot | { date: Date }>(props: WithTimeslot<T>) => {
+  const ChildComponent: Component<WithTimeslot<T>> = (props) => {
     return (
       <>
         <span class="">Timeslot: {timeslotToString(props.timeslot)}</span>
@@ -40,7 +41,7 @@ export const Redux = (): Function => {
   return Redux();
 }
 
-export const ReservedCard = (props: HasIndex<Reserve>) => {
+export const ReservedCard = (props: WithIndex<Reserve>) => {
   return (
     <Dialog>
       <Dialog.Trigger class={cardStyle}>
@@ -69,7 +70,7 @@ export const ReservedCard = (props: HasIndex<Reserve>) => {
 };
 
 
-export const ScheduleCard = (props: HasIndex<Schedule & { subject: Subject }>) => {
+export const ScheduleCard = (props: WithIndex<Course & { subject: Subject }>) => {
   return (
     <Dialog>
       <Dialog.Trigger class={cardStyle}>

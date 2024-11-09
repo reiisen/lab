@@ -1,5 +1,5 @@
-import { Lab, Reserve, Schedule, ScheduleWithSubject, Subject } from "./types";
-const offset = 0;
+import { Lab, Reserve, Course, Subject, CourseWithSubject } from "./types";
+const offset = -1;
 
 export async function createLab(lab: Omit<Lab, 'id'>): Promise<boolean> {
   let response;
@@ -39,8 +39,8 @@ export async function createSubject(subject: Omit<Subject, 'id'>): Promise<boole
   return true;
 }
 
-export async function createSchedule(schedule: Omit<Schedule, 'id'>): Promise<boolean> {
-  const response = await fetch('http://127.0.0.1:8000/schedule/create', {
+export async function createCourse(schedule: Omit<Course, 'id'>): Promise<boolean> {
+  const response = await fetch('http://127.0.0.1:8000/course/create', {
     headers: {
       "Content-Type": "application/json"
     },
@@ -91,13 +91,13 @@ export async function readSubjects(): Promise<Subject[]> {
   return response.json();
 }
 
-export async function readSchedules(source: { labId: number, day: number }): Promise<ScheduleWithSubject[]> {
+export async function readCourses(source: { labId: number, day: number }): Promise<CourseWithSubject[]> {
   const filter = {
     labId: source.labId,
     day: source.day + offset,
     includeSubject: true
   }
-  const response = await fetch('http://127.0.0.1:8000/schedule/filter', {
+  const response = await fetch('http://127.0.0.1:8000/course/filter', {
 
     headers: {
       "Content-Type": "application/json",
@@ -108,10 +108,17 @@ export async function readSchedules(source: { labId: number, day: number }): Pro
   return response.json();
 }
 
-export async function readReserves(source: { labId: number, day: number }): Promise<Reserve[]> {
+export async function readReserves(source: { labId: number, date: Date }): Promise<Reserve[]> {
+  const min = new Date(source.date);
+  const max = new Date(source.date);
+  min.setHours(0);
+  max.setHours(18);
   const filter = {
     labId: source.labId,
-    day: source.day + offset,
+    date: {
+      gte: min,
+      lte: max
+    },
     status: {
       in: ["PENDING", "ACTIVE"]
     }

@@ -107,6 +107,13 @@ textarea:not([rows]) {
   background: linear-gradient(343deg, rgba(10,10,10,1) 0%, rgba(32,23,51,1) 100%);
 }
 
+.text-gradient {
+  font-size: 72px;
+  background: -webkit-linear-gradient(#eee, #333);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 /**
 * Styles for dialogs
 * */

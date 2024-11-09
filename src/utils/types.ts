@@ -11,10 +11,6 @@ export type Timeslot = {
   timeslot: number
 }
 
-export type HasTimeslot<T> = T & Timeslot;
-export type HasIndex<T> = T & { index: number };
-export type ScheduleWithSubject = Schedule & { subject: Subject };
-
 export interface Reserve {
   id: number;
   labId: number;
@@ -22,11 +18,10 @@ export interface Reserve {
   reason: string;
   status: "PENDING" | "ACTIVE" | "CONCLUDED" | "CANCELLED";
   length: number
-  day: number
-  timeslot: number
+  date: Date;
 }
 
-export interface Schedule {
+export interface Course {
   id: number;
   subjectId: number;
   labId: number;
@@ -42,4 +37,7 @@ export interface Subject {
   dosen: string;
 }
 
-
+export type WithTimeslot<T> = T & Timeslot;
+export type WithDate<T> = T & Date;
+export type WithIndex<T> = T & { index: number };
+export type CourseWithSubject = Course & { subject: Subject };

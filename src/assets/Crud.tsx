@@ -2,7 +2,7 @@ import { Component, createResource, createSignal, Show, Signal } from "solid-js"
 import { Tabs } from "@kobalte/core/tabs";
 import { Select } from "@kobalte/core/select";
 import type { Lab, Subject } from "../utils/types";
-import { createSchedule, readLabs, readSubjects } from "../utils/fetch";
+import { createCourse, readLabs, readSubjects } from "../utils/fetch";
 import { FaSolidArrowDown } from 'solid-icons/fa'
 import { Table } from "./Table";
 
@@ -163,7 +163,7 @@ const CrudCreate: Component<{ labs: Lab[], subjects: Subject[] }> = (props) => {
         <Dropdown data={timeslots} signal={[timeslot, setTimeslot]} />
       </div>
       <button
-        onClick={() => createSchedule({
+        onClick={() => createCourse({
           labId: lab().id,
           subjectId: subject().id,
           day: dayIndex.get(day().toLowerCase())!,
