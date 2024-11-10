@@ -1,18 +1,17 @@
-import { Component, createResource, createSignal, Show, Signal } from "solid-js"
+import { Component, createResource, createSignal, Show } from "solid-js"
 import { Tabs } from "@kobalte/core/tabs";
-import { Select } from "@kobalte/core/select";
 import type { Lab, Subject } from "../utils/types";
 import { createCourse, readLabs, readSubjects } from "../utils/fetch";
-import { FaSolidArrowDown } from 'solid-icons/fa'
-import { Table } from "./Table";
+import { Table } from "./ui/Table";
+import { Dropdown, DropdownObject } from "./ui/Dropdown";
 
-const crudContentStyle = "flex flex-col gap-8";
-const dayIndex = new Map<string, number>()
+export const crudContentStyle = "flex flex-col gap-8";
+export const dayIndex = new Map<string, number>()
   .set('monday', 0).set('tuesday', 1)
   .set('wednesday', 2).set('thursday', 3)
   .set('friday', 4).set('saturday', 5);
 
-const timeIndex = new Map<string, number>()
+export const timeIndex = new Map<string, number>()
   .set('07:00', 0).set('08:00', 1)
   .set('09:00', 2).set('10:00', 3)
   .set('11:00', 4).set('12:00', 5)
@@ -59,71 +58,7 @@ export const Crud: Component = () => {
   )
 }
 
-const DropdownObject = <T extends { id: number, name: string },>(props: { data: T[], signal: Signal<T> }) => {
-  const [get, set] = props.signal;
-  return (
-    <Select<T>
-      value={get()}
-      onChange={set}
-      optionValue="id"
-      optionTextValue="name"
-      disallowEmptySelection={true}
-      options={props.data}
-      itemComponent={props => (
-        <Select.Item item={props.item} class="select__item">
-          <Select.ItemLabel>{props.item.rawValue.name}</Select.ItemLabel>
-        </Select.Item>
-      )}
-    >
-      <Select.Trigger class="select__trigger" aria-label="Fruit">
-        <Select.Value<T> class="select__value">
-          {state => state.selectedOption().name}
-        </Select.Value>
-        <Select.Icon class="select__icon">
-          <FaSolidArrowDown />
-        </Select.Icon>
-      </Select.Trigger>
-      <Select.Portal>
-        <Select.Content class="select__content">
-          <Select.Listbox class="select__listbox" />
-        </Select.Content>
-      </Select.Portal>
-    </Select>
-  );
-}
-
-const Dropdown: Component<{ data: string[], signal: Signal<string> }> = (props) => {
-  const [get, set] = props.signal;
-  return (
-    <Select
-      value={get()}
-      onChange={set}
-      options={props.data}
-      disallowEmptySelection={true}
-      itemComponent={props => (
-        <Select.Item item={props.item} class="select__item">
-          <Select.ItemLabel>{props.item.rawValue}</Select.ItemLabel>
-        </Select.Item>
-      )}
-    >
-      <Select.Trigger class="select__trigger" aria-label="Fruit">
-        <Select.Value<string> class="select__value">
-          {state => state.selectedOption()}
-        </Select.Value>
-        <Select.Icon class="select__icon">
-          <FaSolidArrowDown />
-        </Select.Icon>
-      </Select.Trigger>
-      <Select.Portal>
-        <Select.Content class="select__content">
-          <Select.Listbox class="select__listbox" />
-        </Select.Content>
-      </Select.Portal>
-    </Select>
-  );
-}
-
-const CrudCreate: Component<{ labs: Lab[], subjects: Subject[] }> = (props) => {
+const CrudCreate: Component<{ labs: Lab[]; subjects: Subject[]; }> = (props) => {
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
   const lengths = ["1", "2", "3"];
   const timeslots = [
@@ -175,8 +110,9 @@ const CrudCreate: Component<{ labs: Lab[], subjects: Subject[] }> = (props) => {
         Create
       </button>
     </div>
-  )
-}
+  );
+};
+
 
 const CrudRead: Component<{ labs: Lab[], subjects: Subject[] }> = (props) => {
   const [lab, setLab] = createSignal<Lab>(props.labs[0]);
@@ -193,7 +129,7 @@ const CrudRead: Component<{ labs: Lab[], subjects: Subject[] }> = (props) => {
           <DropdownObject data={props.subjects} signal={[subject, setSubject]} />
         </div>
       </div>
-      <Table<Lab> {...props.labs} />
+      <Table<Lab> data={props.labs} />
     </div>
   )
 }

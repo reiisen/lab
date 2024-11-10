@@ -8,19 +8,19 @@ export const Footer: Component = () => {
         href="/"
         class="hover:bg-gray-700 px-4 py-2 rounded transition"
       >
-        Home
+        Support
       </a>
       <a
         href="/reserve"
         class="hover:bg-gray-700 px-4 py-2 rounded transition"
       >
-        Labs
+        Team
       </a>
       <a
         href="/history"
         class="hover:bg-gray-700 px-4 py-2 rounded transition"
       >
-        History
+        Source Code
       </a>
     </div>
   );

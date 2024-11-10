@@ -6,13 +6,13 @@ import {
   Switch,
 } from "solid-js";
 
-import { readReserves, readCourses } from "../utils/fetch";
+import { readIncompleteReserves, readCourses } from "../utils/fetch";
 import { useParams } from "@solidjs/router";
 import { Loading } from "./Loading";
 import { Error } from "./Error";
 import { ScheduleGrid } from "./Grid";
 
-export const Course: Component = () => {
+export const Slots: Component = () => {
   const [courseParam] = createSignal({
     labId: parseInt(useParams().id),
     day: new Date().getDay(),
@@ -22,7 +22,7 @@ export const Course: Component = () => {
     date: new Date(),
   });
   const [courseData] = createResource(courseParam(), readCourses);
-  const [reserveData] = createResource(reserveParam(), readReserves);
+  const [reserveData] = createResource(reserveParam(), readIncompleteReserves);
   return (
     <Switch>
       <Match

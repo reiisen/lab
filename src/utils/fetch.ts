@@ -1,5 +1,5 @@
 import { Lab, Reserve, Course, Subject, CourseWithSubject } from "./types";
-const offset = -1;
+const offset = -2;
 
 export async function createLab(lab: Omit<Lab, 'id'>): Promise<boolean> {
   let response;
@@ -55,13 +55,15 @@ export async function createCourse(schedule: Omit<Course, 'id'>): Promise<boolea
   return true;
 }
 
-export async function createReserve(reserve: Omit<Reserve, 'id'>): Promise<boolean> {
+export async function createReserve(reserve: Omit<Reserve, 'id' | 'status'>): Promise<boolean> {
+  const date = new Date(reserve.date);
+  date.setDate(date.getDate() - 2);
   const response = await fetch('http://127.0.0.1:8000/reserve/create', {
     headers: {
       "Content-Type": "application/json"
     },
     method: "POST",
-    body: JSON.stringify(reserve)
+    body: JSON.stringify({ ...reserve, date: date })
   })
 
   if (response.status !== 200) {
@@ -94,7 +96,7 @@ export async function readSubjects(): Promise<Subject[]> {
 export async function readCourses(source: { labId: number, day: number }): Promise<CourseWithSubject[]> {
   const filter = {
     labId: source.labId,
-    day: source.day + offset,
+    day: source.day + offset < 0 ? source.day + offset + 7 : source.day + offset,
     includeSubject: true
   }
   const response = await fetch('http://127.0.0.1:8000/course/filter', {
@@ -108,11 +110,13 @@ export async function readCourses(source: { labId: number, day: number }): Promi
   return response.json();
 }
 
-export async function readReserves(source: { labId: number, date: Date }): Promise<Reserve[]> {
+export async function readIncompleteReserves(source: { labId: number, date: Date }): Promise<Reserve[]> {
   const min = new Date(source.date);
   const max = new Date(source.date);
   min.setHours(0);
-  max.setHours(18);
+  min.setDate(min.getDate() + offset);
+  max.setHours(17);
+  max.setDate(max.getDate() + offset);
   const filter = {
     labId: source.labId,
     date: {
@@ -121,6 +125,67 @@ export async function readReserves(source: { labId: number, date: Date }): Promi
     },
     status: {
       in: ["PENDING", "ACTIVE"]
+    }
+  }
+  const response = await fetch('http://127.0.0.1:8000/reserve/filter', {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+    body: JSON.stringify(filter)
+  });
+  return response.json();
+}
+
+export async function readCompleteReserves(source: { labId: number, date: Date }): Promise<Reserve[]> {
+  const min = new Date(source.date);
+  const max = new Date(source.date);
+  min.setHours(0);
+  min.setDate(min.getDate() + offset);
+  max.setHours(17);
+  max.setDate(max.getDate() + offset);
+  const filter = {
+    labId: source.labId,
+    date: {
+      gte: min,
+      lte: max
+    },
+    status: {
+      in: ["CONCLUDED", "CANCELLED"]
+    }
+  }
+  const response = await fetch('http://127.0.0.1:8000/reserve/filter', {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+    body: JSON.stringify(filter)
+  });
+  return response.json();
+}
+
+export async function readReserves
+  (
+    source:
+      {
+        labId: number,
+        date: Date,
+      }
+  ): Promise<Reserve[]> {
+  const min = new Date(source.date);
+  const max = new Date(source.date);
+  min.setHours(0);
+  min.setDate(min.getDate() + offset);
+  max.setHours(17);
+  max.setDate(max.getDate() + offset);
+  const filter = {
+    labId: source.labId,
+    date: {
+      gte: min,
+      lte: max
+    },
+    status: {
+      in: ["PENDING", "ACTIVE", "CONCLUDED", "CANCELLED"]
     }
   }
   const response = await fetch('http://127.0.0.1:8000/reserve/filter', {

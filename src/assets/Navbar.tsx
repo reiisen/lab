@@ -10,7 +10,7 @@ export const Navbar: Component = () => {
         Home
       </a>
       <a
-        href="/reserve"
+        href="/labs"
         class="hover:opacity-50 px-4 rounded transition"
       >
         Labs

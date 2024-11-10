@@ -4,7 +4,7 @@ import { LabGrid } from "./Grid";
 
 export const [labData] = createResource(readLabs);
 
-export const Reserve: Component = () => {
+export const Labs: Component = () => {
   return (
     <LabGrid labs={labData()!} />
   )

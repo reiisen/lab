@@ -20,10 +20,12 @@
     "vite-plugin-solid": "^2.8.2"
   },
   "dependencies": {
+    "@corvu/dialog": "^0.2.3",
     "@kobalte/core": "^0.13.7",
     "@solidjs/router": "^0.14.9",
     "axios": "^1.7.7",
     "solid-icons": "^1.1.0",
-    "solid-js": "^1.8.11"
+    "solid-js": "^1.8.11",
+    "solid-prevent-scroll": "^0.1.10"
   }
 }
