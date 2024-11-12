@@ -6,6 +6,8 @@ export const [labData] = createResource(readLabs);
 
 export const Labs: Component = () => {
   return (
-    <LabGrid labs={labData()!} />
-  )
-}
+    <div class="py-4">
+      <LabGrid labs={labData()!} />
+    </div>
+  );
+};
