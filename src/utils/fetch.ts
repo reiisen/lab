@@ -1,5 +1,5 @@
 import { Lab, Reserve, Course, Subject, CourseWithSubject } from "./types";
-const offset = 2;
+const offset = 0;
 
 export async function createLab(lab: Omit<Lab, "id">): Promise<boolean> {
   let response;
