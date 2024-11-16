@@ -1,125 +1,98 @@
-import { createResource, createSignal, Resource, Show, Signal } from "solid-js"
-import { Lab, Reserve } from "../utils/types"
-import { Dropdown, DropdownObject } from "./ui/Dropdown"
+import { createMemo, createResource, createSignal, Show } from "solid-js"
+import { Lab, Reserve, WithTimestamp } from "../utils/types"
+import { DropdownObject } from "./ui/Dropdown"
 import { readLabs, readReserves } from "../utils/fetch"
 import { Table } from "./ui/Table";
+import { SimpleDatepicker } from "solid-simple-datepicker";
+import { Loading } from "./Loading";
+import "solid-simple-datepicker/styles.css";
+import { Portal } from "solid-js/web";
 
-const daysData = [...Array(32).keys().map((value) => value.toString())];
-const monthsData = [...Array(13).keys().map((value) => value.toString())];
-daysData.shift();
-monthsData.shift();
+const overlay = "h-screen w-screen backdrop-blur-sm backdrop-brightness-75 fixed left-1 top-1 -translate-x-1 -translate-y-1"
 
-type HistoryParams = {
-  labs: Lab[],
-  days: Signal<string[]>,
-  months: Signal<string[]>,
-  years: string[]
+type HistoryRecord = {
+  Name: string,
+  Reason: string,
+  Created: string,
+  Date: string,
+  Status: string
 }
 
-type HistorySignals = {
-  lab: Signal<Lab>,
-  day: Signal<string>,
-  days: Signal<string[]>,
-  month: Signal<string>,
-  months: Signal<string[]>,
-  year: Signal<string>,
+const dummyRecord = {
+  Name: "-",
+  Reason: "-",
+  Created: "-",
+  Date: "-",
+  Status: "-"
+}
+
+function reserveToRecord(reserve: WithTimestamp<Reserve>): HistoryRecord {
+  return {
+    Name: reserve.name,
+    Reason: reserve.reason,
+    Created: reserve.createdAt.toString(),
+    Date: reserve.date.toString(),
+    Status: reserve.status
+  }
 }
 
 export const History = () => {
-  const [labs] = createResource(readLabs);
-  const years = ['2024'];
-
-  const [days, setDays] = createSignal(daysData);
-  const [months, setMonths] = createSignal(monthsData);
-
+  const [labs] = createResource(readLabs, { initialValue: [] });
   return (
-    <div class="flex flex-col gap-5 w-3/4">
-      <Show when={labs.state === 'ready'}>
-        <HistoryRoot params={{ labs: labs()!, days: [days, setDays], months: [months, setMonths], years: years }} />
+    <div class="flex flex-col w-3/4">
+      <Show when={labs.state === 'ready'} fallback={<Loading />}>
+        <HistoryRoot labs={labs()} />
       </Show>
     </div>
   )
 }
 
-const LabOption = (props: { labs: Lab[], labSignal: Signal<Lab> }) => {
-  return (
-    <DropdownObject<Lab> data={props.labs} signal={props.labSignal} />
-  )
-}
+const HistoryRoot = (props: { labs: Lab[] }) => {
+  const [lab, setLab] = createSignal<Lab>(props.labs[0]);
+  const [date, setDate] = createSignal<Date>(new Date());
+  const [open, setOpen] = createSignal(false);
 
-const DayMonthOption = (props: { days: Signal<string[]>, daySignal: Signal<string>, months: Signal<string[]>, monthSignal: Signal<string> }) => {
-  const [days, setDays] = props.days;
-  const [months, setMonths] = props.months;
+  const [filter, setFilter] = createSignal({ labId: lab().id, date: date() });
 
-  const [day, setDay] = props.daySignal;
-  const [month, setMonth] = props.monthSignal;
+  createMemo(() => setFilter({ labId: lab().id, date: date() }));
 
-  const checkIfThisMonthIsEitherThirtyOrThirtyOne = () => {
-    if (month() === '7' || month() === '8' || parseInt(month()) % 2 === 1) {
-      setDays(daysData);
-    } else {
-      const data = [...daysData];
-      data.pop();
-      setDays([...data]);
-    }
-  }
-  return (
-    <>
-      <Dropdown data={days()} signal={props.daySignal} />
-      <Dropdown data={months()} signal={props.monthSignal} customOnChange={() => checkIfThisMonthIsEitherThirtyOrThirtyOne()} />
-    </>
-  )
-}
-
-const YearOption = (props: { years: string[], yearSignal: Signal<string> }) => {
-  return (
-    <Dropdown data={props.years} signal={props.yearSignal} />
-  )
-}
-
-const Options = (props: { params: HistoryParams, signals: HistorySignals }) => {
-  return (
-    <div class="flex flex-row gap-2">
-      <LabOption labs={props.params.labs} labSignal={props.signals.lab} />
-      <DayMonthOption days={props.params.days} daySignal={props.signals.day} months={props.params.months} monthSignal={props.signals.month} />
-      <YearOption years={props.params.years} yearSignal={props.signals.year} />
-    </div>
-  )
-}
-
-const HistoryRoot = (props: { params: HistoryParams }) => {
-
-  const [days, setDays] = props.params.days;
-  const [months, setMonths] = props.params.months;
-
-  //Signals
-  const [lab, setLab] = createSignal(props.params.labs[0]);
-  const [day, setDay] = createSignal(days()[0]);
-  const [month, setMonth] = createSignal(months()[0]);
-  const [year, setYear] = createSignal(props.params.years[0]);
-
-  const [filter, setFilter] = createSignal({ labId: lab().id, date: new Date() });
-
-  //Resource, i will kys
-  const [reserves] = createResource(filter(), readReserves, { initialValue: [] });
+  const [reserves] = createResource(filter, readReserves, { initialValue: [] });
 
   return (
     <>
-      <Options
-        params={{ ...props.params }}
-        signals={
-          {
-            lab: [lab, setLab],
-            day: [day, setDay],
-            month: [month, setMonth],
-            year: [year, setYear],
-            days: [days, setDays],
-            months: [months, setMonths]
-          }
-        }
-      />
+      <div class="flex flex-row">
+        <DropdownObject data={props.labs} signal={[lab, setLab]} />
+        <button
+          class="select__trigger"
+          onClick={() => {
+            setOpen(true);
+
+            const handleEscape = (event: KeyboardEvent) => {
+              if (event.key === 'Escape') {
+                setOpen(false);
+                document.removeEventListener('keydown', handleEscape);
+              }
+            };
+
+            document.addEventListener('keydown', handleEscape);
+          }}
+        >Pick Date
+        </button>
+
+      </div>
       <Show when={reserves.state === 'ready'}>
-        <Table<Reserve> data={reserves()} />
+        <Table<HistoryRecord> data={reserves() ? reserves().map((value) => reserveToRecord(value as WithTimestamp<Reserve>)) : [dummyRecord]} />
+      </Show>
+      <Show when={open()}>
+        <Portal>
+          <div class={overlay} onClick={() => setOpen(false)} />
+          <SimpleDatepicker
+            class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+            selectedDate={date()}
+            onChange={(date) => { setDate(date) }}
+            onFooterDone={() => setOpen(false)}
+          />
+        </Portal>
       </Show>
     </>
   )

@@ -1,5 +1,5 @@
 import { Lab, Reserve, Course, Subject, CourseWithSubject } from "./types";
-const offset = 0;
+const offset = 2;
 
 export async function createLab(lab: Omit<Lab, "id">): Promise<boolean> {
   let response;
@@ -11,7 +11,7 @@ export async function createLab(lab: Omit<Lab, "id">): Promise<boolean> {
       method: "POST",
       body: JSON.stringify(lab),
     });
-  } catch {}
+  } catch { }
 
   if (response!.status !== 200) {
     return false;
@@ -124,7 +124,7 @@ export async function readIncompleteReserves(source: {
   const max = new Date(source.date);
   min.setHours(0);
   min.setDate(min.getDate() + offset);
-  max.setHours(17);
+  max.setHours(17, 1);
   max.setDate(max.getDate() + offset);
   const filter = {
     labId: source.labId,

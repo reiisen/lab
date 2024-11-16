@@ -9,26 +9,37 @@ const tableRow =
 const scrollableRowsContainer = "max-h-96 overflow-y-auto"; // Adjust max height as needed
 
 export const Table = <T extends object>(props: { data: T[] }) => {
+  if (!props.data?.length) {
+    return (
+      <div class={tableContainer}></div>
+    )
+  }
+
+  const headers = Object.keys(props.data[0]);
+
   return (
     <div class={tableContainer}>
-      <div class={tableColumn}>
-        {Object.keys(props.data[0]).map((key) => (
-          <span>{key}</span>
-        ))}
-      </div>
-      <div class={scrollableRowsContainer}>
-        <For each={props.data}>
-          {(item) => {
-            return (
-              <div class={tableRow}>
-                {Object.values(item as object).map((value) => (
-                  <span>{`${value}`}</span>
-                ))}
-              </div>
-            );
-          }}
-        </For>
-      </div>
+      {/* Only render the table structure if we have headers */}
+      {headers.length > 0 && (
+        <>
+          <div class={tableColumn}>
+            {headers.map((key) => (
+              <span>{key}</span>
+            ))}
+          </div>
+          <div class={scrollableRowsContainer}>
+            <For each={props.data}>
+              {(item) => (
+                <div class={tableRow}>
+                  {Object.values(item as object).map((value) => (
+                    <span>{value ?? '-'}</span>
+                  ))}
+                </div>
+              )}
+            </For>
+          </div>
+        </>
+      )}
     </div>
   );
 };

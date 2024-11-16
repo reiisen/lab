@@ -17,18 +17,17 @@ export const LabGrid: Component<{ labs: Lab[] }> = (props) => {
 };
 
 export const ScheduleGrid: Component<{
-  schedules: CourseWithSubject[];
-  reserves: Reserve[];
+  data: [CourseWithSubject[], Reserve[]]
 }> = (props) => {
   const map = Array<JSX.Element>(11).fill(undefined);
-  props.schedules.forEach((value) => {
+  props.data[0].forEach((value) => {
     for (let i = 0; i < value.length; i++) {
       map[value.timeslot - 7 + i] = (
         <CourseCard {...value} index={value.timeslot + i} />
       );
     }
   });
-  props.reserves.forEach((value) => {
+  props.data[1].forEach((value) => {
     const date: Date = new Date(value.date);
     for (let i = 0; i < value.length; i++) {
       map[date.getHours() - 7 + i] = (

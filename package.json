@@ -26,6 +26,7 @@
     "axios": "^1.7.7",
     "solid-icons": "^1.1.0",
     "solid-js": "^1.8.11",
-    "solid-prevent-scroll": "^0.1.10"
+    "solid-prevent-scroll": "^0.1.10",
+    "solid-simple-datepicker": "^1.1.1"
   }
 }

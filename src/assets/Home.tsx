@@ -1,7 +1,8 @@
 import { FiCodesandbox } from "solid-icons/fi";
 import { FiHelpCircle } from "solid-icons/fi";
-import type { Component } from "solid-js";
+import { createSignal, type Component } from "solid-js";
 import { CardWithIcon } from "./ui/Card";
+import { colorCycle } from "../utils/rgb";
 
 const cardGrid = "grid grid-cols-1 md:grid-cols-2 gap-4 p-4";
 const cardLink = "no-underline";
