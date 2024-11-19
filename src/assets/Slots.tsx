@@ -84,7 +84,7 @@ export const Slots: Component = () => {
         <Match
           when={data.state === "ready"}
         >
-          <ScheduleGrid data={data()!} />
+          <ScheduleGrid data={data()!} date={date()} />
         </Match>
         <Match when={data.loading}>
           <Loading />

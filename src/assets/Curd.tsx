@@ -74,11 +74,11 @@ export const ReservedCard = (props: WithIndex<Reserve>) => {
   )
 }
 
-export const VacantCard = (props: { index: number }) => {
+export const VacantCard = (props: { index: number, date: Date }) => {
   const [name, setName] = createSignal<string>("");
   const [reason, setReason] = createSignal<string>("");
   const params = useParams();
-  const date = new Date();
+  const date = new Date(props.date);
   date.setHours(props.index);
   const FormPopup: Component = () => {
     return (

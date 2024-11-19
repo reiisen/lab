@@ -60,6 +60,7 @@ export async function createReserve(
   reserve: Omit<Reserve, "id" | "status">
 ): Promise<boolean> {
   const date = new Date(reserve.date);
+  console.log(date);
   date.setDate(date.getDate() + offset);
   const response = await fetch("http://127.0.0.1:8000/reserve/create", {
     headers: {
