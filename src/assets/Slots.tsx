@@ -41,22 +41,37 @@ export const Slots: Component = () => {
   const [data, { mutate, refetch }] = createResource(filter, pack);
 
   const DateButton = () =>
-    <button
-      class="select__trigger"
-      onClick={() => {
-        setOpen(true);
+    <div class="flex flex-row gap-1">
+      <button
+        class="mt-2 px-3 py-2 hover:brightness-90 bg-white text-neutral-600"
+        onClick={() => { const newDate = new Date(date()); newDate.setDate(newDate.getDate() - 1); setDate(newDate) }}
+      >
+        {`<`}
+      </button>
+      <button
+        class="mt-2 px-3 py-2 border-b-2 border-neutral-400 hover:brightness-90 bg-white text-neutral-600"
+        onClick={() => {
+          setOpen(true);
 
-        const handleEscape = (event: KeyboardEvent) => {
-          if (event.key === 'Escape') {
-            setOpen(false);
-            document.removeEventListener('keydown', handleEscape);
-          }
-        };
+          const handleEscape = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+              setOpen(false);
+              document.removeEventListener('keydown', handleEscape);
+            }
+          };
 
-        document.addEventListener('keydown', handleEscape);
-      }}
-    >Pick Date
-    </button>;
+          document.addEventListener('keydown', handleEscape);
+        }}
+      >
+        {date().toLocaleDateString('id-ID')}
+      </button>
+      <button
+        class="mt-2 px-3 py-2 hover:brightness-90 bg-white text-neutral-600"
+        onClick={() => { const newDate = new Date(date()); newDate.setDate(newDate.getDate() + 1); setDate(newDate) }}
+      >
+        {`>`}
+      </button>
+    </div>;
 
   const DatePicker = () =>
     <SimpleDatepicker
@@ -74,8 +89,6 @@ export const Slots: Component = () => {
     console.log('Current params:', filter());
     console.log('Current data:', data());
   });
-
-  setInterval(() => console.log(filter()), 2000);
 
   return (
     <>

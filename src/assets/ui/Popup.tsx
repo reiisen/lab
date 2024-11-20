@@ -28,7 +28,21 @@ export const Popup = <T extends object,>(props: { value: T, trigger: Component, 
   })
   return (
     <>
-      <div class="cursor-pointer" onClick={() => setOpen(true)}>
+      <div
+        class="cursor-pointer"
+        onClick={
+          () => {
+            setOpen(true);
+
+            const handleEscape = (event: KeyboardEvent) => {
+              if (event.key === 'Escape') {
+                setOpen(false);
+                document.removeEventListener('keydown', handleEscape);
+              }
+            };
+
+            document.addEventListener('keydown', handleEscape);
+          }}>
         <props.trigger />
       </div>
       <Show when={open()}>
@@ -59,7 +73,21 @@ export const BasicPopup = (props: { trigger: Component, content: Component }) =>
   })
   return (
     <>
-      <div class="cursor-pointer" onClick={() => setOpen(true)}>
+      <div
+        class="cursor-pointer"
+        onClick={
+          () => {
+            setOpen(true);
+
+            const handleEscape = (event: KeyboardEvent) => {
+              if (event.key === 'Escape') {
+                setOpen(false);
+                document.removeEventListener('keydown', handleEscape);
+              }
+            };
+
+            document.addEventListener('keydown', handleEscape);
+          }}>
         <props.trigger />
       </div>
       <Show when={open()}>

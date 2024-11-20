@@ -22,7 +22,7 @@ function checkIcon(str: string): IconTypes {
 }
 
 export const TimeslotCard = <T extends object,>(props: WithIndex<{ value: T, timeslot: number, popup: Component<T> }>) => {
-  const triggerCard = () => <CardWithIcon text={timeslotToString(props.index)} icon={FiX} />
+  const triggerCard = () => <CardWithIcon text={timeslotToString(props.index)} icon={FiX}>UNAVAILABLE</CardWithIcon>
   return (
     <div>
       <Popup<typeof props.value> value={props.value} trigger={triggerCard} content={props.popup} />
@@ -46,7 +46,7 @@ export const CourseCard = (props: WithIndex<CourseWithSubject>) => {
         <span>{`Used for a course`}</span>
         <span>{`Course name: ${props.subject.name}`}</span>
         <span>{`Course dosen: ${props.subject.dosen}`}</span>
-        <span>{`Course period: ${timeToString(props.timeslot)}`}</span>
+        <span>{`Course period: ${timeToString(props.timeslot)} - ${timeToString(props.timeslot + props.length)}`}</span>
       </>
     )
   }
@@ -103,7 +103,7 @@ export const VacantCard = (props: { index: number, date: Date }) => {
       </div>
     )
   }
-  const card = () => <CardWithIcon text={timeslotToString(props.index)} icon={FiCheck} />
+  const card = () => <CardWithIcon text={timeslotToString(props.index)} icon={FiCheck}>AVAILABLE</CardWithIcon>
   return (
     <BasicPopup trigger={card} content={FormPopup} />
   )
