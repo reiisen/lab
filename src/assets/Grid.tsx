@@ -1,7 +1,6 @@
 import { Component, For, Index, JSX } from "solid-js";
-import type { Lab, Reserve, CourseWithSubject } from "../utils/types";
+import type { Lab, Reserve } from "../utils/types";
 import {
-  CourseCard,
   LabCard,
   ReservedCard,
   RestrictedCard,
@@ -17,18 +16,14 @@ export const LabGrid: Component<{ labs: Lab[] }> = (props) => {
 };
 
 export const ScheduleGrid: Component<{
-  data: [CourseWithSubject[], Reserve[]]
+  data: Reserve[]
   date: Date
+  refetcher?: Function
 }> = (props) => {
+
   const map = Array<JSX.Element>(11).fill(undefined);
-  props.data[0].forEach((value) => {
-    for (let i = 0; i < value.length; i++) {
-      map[value.timeslot - 7 + i] = (
-        <CourseCard {...value} index={value.timeslot + i} />
-      );
-    }
-  });
-  props.data[1].forEach((value) => {
+
+  props.data.forEach((value) => {
     const date: Date = new Date(value.date);
     for (let i = 0; i < value.length; i++) {
       map[date.getHours() - 7 + i] = (
@@ -36,12 +31,12 @@ export const ScheduleGrid: Component<{
       );
     }
   });
-  console.log("CURRENNN : " + props.date);
+
   return (
     <div class="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-3 px-8 m-auto">
       <Index each={map}>
         {(value, index) => {
-          return value() ? value() : <VacantCard index={index + 7} date={props.date} />;
+          return value() ? value() : <VacantCard index={index + 7} date={props.date} refetcher={props.refetcher ? props.refetcher : undefined} />;
         }}
       </Index>
       <RestrictedCard />

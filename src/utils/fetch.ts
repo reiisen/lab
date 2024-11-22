@@ -1,4 +1,4 @@
-import { Lab, Reserve, Course, Subject, CourseWithSubject } from "./types";
+import { Lab, Reserve } from "./types";
 const offset = 0;
 
 export async function createLab(lab: Omit<Lab, "id">): Promise<boolean> {
@@ -14,42 +14,6 @@ export async function createLab(lab: Omit<Lab, "id">): Promise<boolean> {
   } catch { }
 
   if (response!.status !== 200) {
-    return false;
-  }
-
-  return true;
-}
-
-export async function createSubject(
-  subject: Omit<Subject, "id">
-): Promise<boolean> {
-  const response = await fetch("http://127.0.0.1:8000/subject/create", {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    method: "POST",
-    body: JSON.stringify(subject),
-  });
-
-  if (response.status !== 200) {
-    return false;
-  }
-
-  return true;
-}
-
-export async function createCourse(
-  schedule: Omit<Course, "id">
-): Promise<boolean> {
-  const response = await fetch("http://127.0.0.1:8000/course/create", {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    method: "POST",
-    body: JSON.stringify(schedule),
-  });
-
-  if (response.status !== 200) {
     return false;
   }
 
@@ -87,35 +51,6 @@ export async function readLabs(): Promise<Lab[]> {
   return response.json();
 }
 
-export async function readSubjects(): Promise<Subject[]> {
-  const response = await fetch("http://127.0.0.1:8000/subject/", {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    method: "GET",
-  });
-  return response.json();
-}
-
-export async function readCourses(source: {
-  labId: number;
-  day: number;
-}): Promise<CourseWithSubject[]> {
-  const filter = {
-    labId: source.labId,
-    day:
-      source.day + offset < 0 ? source.day + offset + 7 : source.day + offset,
-    includeSubject: true,
-  };
-  const response = await fetch("http://127.0.0.1:8000/course/filter", {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    method: "POST",
-    body: JSON.stringify(filter),
-  });
-  return response.json();
-}
 
 export async function readIncompleteReserves(source: {
   labId: number;

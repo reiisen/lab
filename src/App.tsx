@@ -7,6 +7,7 @@ import { Labs } from "./assets/Labs";
 import { Slots } from "./assets/Slots";
 import { Crud } from "./assets/Crud";
 import { History } from "./assets/History";
+import { Toast } from "./assets/ui/Toast";
 
 const base = "relative bg-white min-h-screen min-w-screen flex flex-col"
 const inner = "flex-1 w-full flex flex-col items-center justify-center"
@@ -32,6 +33,7 @@ const App: Component = () => {
       </div>
 
       <Footer />
+      <Toast />
     </>
   );
 };

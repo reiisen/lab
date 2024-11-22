@@ -1,5 +1,5 @@
 import { Component, createSignal } from "solid-js"
-import { CourseWithSubject, Lab, Reserve, WithIndex } from "../utils/types"
+import { Lab, Reserve, WithIndex } from "../utils/types"
 import { IconTypes } from "solid-icons"
 import { FiCpu, FiDatabase, FiActivity, FiCodepen, FiCheck, FiX } from 'solid-icons/fi'
 import { useParams } from "@solidjs/router"
@@ -7,6 +7,7 @@ import { createReserve } from "../utils/fetch"
 import { BasicPopup, Popup } from "./ui/Popup"
 import { CardWithIcon } from "./ui/Card"
 import { SignalInput } from "./ui/TextInput"
+import { toast } from "./ui/Toast"
 
 const formContainer = `flex flex-col gap-3`
 
@@ -39,24 +40,6 @@ export const LabCard: Component<Lab> = (props) => {
   )
 }
 
-export const CourseCard = (props: WithIndex<CourseWithSubject>) => {
-  const CoursePopup: Component<CourseWithSubject> = (props) => {
-    return (
-      <>
-        <span>{`Used for a course`}</span>
-        <span>{`Course name: ${props.subject.name}`}</span>
-        <span>{`Course dosen: ${props.subject.dosen}`}</span>
-        <span>{`Course period: ${timeToString(props.timeslot)} - ${timeToString(props.timeslot + props.length)}`}</span>
-      </>
-    )
-  }
-  return (
-    <>
-      <TimeslotCard<CourseWithSubject> value={props} timeslot={props.timeslot} popup={CoursePopup} index={props.index} />
-    </>
-  )
-}
-
 export const ReservedCard = (props: WithIndex<Reserve>) => {
   const ReservedPopup: Component<Reserve> = (props) => {
     return (
@@ -74,12 +57,12 @@ export const ReservedCard = (props: WithIndex<Reserve>) => {
   )
 }
 
-export const VacantCard = (props: { index: number, date: Date }) => {
+export const VacantCard = (props: { index: number, date: Date, refetcher?: Function }) => {
   const [name, setName] = createSignal<string>("");
   const [reason, setReason] = createSignal<string>("");
   const params = useParams();
   const date = new Date(props.date);
-  date.setHours(props.index);
+  date.setHours(props.index, 0);
   const FormPopup: Component = () => {
     return (
       <div class={formContainer}>
@@ -87,8 +70,8 @@ export const VacantCard = (props: { index: number, date: Date }) => {
         <SignalInput signal={[name, setName]} />
         <label>Reason:</label>
         <SignalInput signal={[reason, setReason]} />
-        <button onClick={() => {
-          createReserve(
+        <button onClick={async () => {
+          const result = await createReserve(
             {
               labId: parseInt(params.id),
               name: name(),
@@ -96,7 +79,11 @@ export const VacantCard = (props: { index: number, date: Date }) => {
               date: date,
               length: 1
             }
-          )
+          );
+          if (result && props.refetcher) {
+            toast("Nice");
+            props.refetcher();
+          }
         }}>
           Reserve
         </button>

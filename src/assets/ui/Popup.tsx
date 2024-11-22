@@ -7,7 +7,7 @@ const popupContent = `
   fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
   flex flex-col bg-neutral-100 rounded-lg p-6
 `
-const popupOverlay = `h-screen w-screen backdrop-blur-xl fixed left-1 top-1 -translate-x-1 -translate-y-1`
+const popupOverlay = `h-screen w-screen backdrop-blur-sm backdrop-brightness-75 fixed left-1 top-1 -translate-x-1 -translate-y-1`
 const popupClose = `
   absolute top-0 right-0 bg-neutral-200 w-10 h-10 rounded-lg flex items-center
   justify-center hover:brightness-75 transition-brightness duration-200

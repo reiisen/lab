@@ -9,20 +9,15 @@ import {
   Switch,
 } from "solid-js";
 
-import { readIncompleteReserves, readCourses } from "../utils/fetch";
+import { readIncompleteReserves } from "../utils/fetch";
 import { useParams } from "@solidjs/router";
 import { Loading } from "./Loading";
 import { Error } from "./Error";
 import { ScheduleGrid } from "./Grid";
 import { SimpleDatepicker } from "solid-simple-datepicker";
 import { Portal } from "solid-js/web";
-import { CourseWithSubject, Reserve } from "../utils/types";
 
 const overlay = "h-screen w-screen backdrop-blur-sm backdrop-brightness-75 fixed left-1 top-1 -translate-x-1 -translate-y-1"
-
-async function pack(param: [{ labId: number, day: number }, { labId: number, date: Date }]): Promise<[CourseWithSubject[], Reserve[]]> {
-  return [await readCourses(param[0]), await readIncompleteReserves(param[1])];
-}
 
 export const Slots: Component = () => {
   const [date, setDate] = createSignal<Date>(new Date());
@@ -31,14 +26,12 @@ export const Slots: Component = () => {
     labId: parseInt(useParams().id),
     day: date().getDay(),
   });
-  const [reserveParam, setReserveParam] = createSignal({
+  const [filter, setFilter] = createSignal({
     labId: parseInt(useParams().id),
     date: date(),
   });
-  const [filter, setFilter] = createSignal
-    <[{ labId: number, day: number }, { labId: number, date: Date }]>([courseParam(), reserveParam()]);
 
-  const [data, { mutate, refetch }] = createResource(filter, pack);
+  const [data, { mutate, refetch }] = createResource(filter, readIncompleteReserves);
 
   const DateButton = () =>
     <div class="flex flex-row gap-1">
@@ -81,9 +74,7 @@ export const Slots: Component = () => {
       onFooterDone={() => setOpen(false)}
     />;
 
-  createMemo(() => setFilter([courseParam(), reserveParam()]));
-  createMemo(() => setCourseParam({ labId: parseInt(useParams().id), day: date().getDay() }));
-  createMemo(() => setReserveParam({ labId: parseInt(useParams().id), date: date() }));
+  createMemo(() => setFilter({ labId: parseInt(useParams().id), date: date() }));
 
   createEffect(() => {
     console.log('Current params:', filter());
@@ -97,7 +88,7 @@ export const Slots: Component = () => {
         <Match
           when={data.state === "ready"}
         >
-          <ScheduleGrid data={data()!} date={date()} />
+          <ScheduleGrid data={data()!} date={date()} refetcher={refetch} />
         </Match>
         <Match when={data.loading}>
           <Loading />
