@@ -1,13 +1,14 @@
 import { Component } from "solid-js";
-import { Navbar } from "./assets/Navbar";
-import { Footer } from "./assets/Footer";
+import { Navbar } from "./components/Navbar";
+import { Footer } from "./components/Footer";
 import { Router, Route } from "@solidjs/router";
-import { Home } from "./assets/Home";
-import { Labs } from "./assets/Labs";
-import { Slots } from "./assets/Slots";
-import { Crud } from "./assets/Crud";
-import { History } from "./assets/History";
-import { Toast } from "./assets/ui/Toast";
+import { Home } from "./components/Home";
+import { Labs } from "./components/Labs";
+import { Slots } from "./components/Slots";
+import { History } from "./components/History";
+import { Toast, Toaster } from "@ark-ui/solid";
+import { toaster } from "./components/ui/Toast";
+import { Computers } from "./components/Computers";
 
 const base = "relative bg-white min-h-screen min-w-screen flex flex-col"
 const inner = "flex-1 w-full flex flex-col items-center justify-center"
@@ -24,16 +25,22 @@ const App: Component = () => {
           <Router>
             <Route path="/" component={Home} />
             <Route path="/labs" component={Labs} />
-            <Route path="labs/pick/:id" component={Slots} />
-            <Route path="/dashboard" component={Crud} />
             <Route path="/history" component={History} />
+            <Route path="/lab/:id" component={Computers} />
+            <Route path="/lab/:id/c/:cid" component={Slots} />
           </Router>
         </div>
 
       </div>
-
+      <Toaster toaster={toaster}>
+        {(toast) => (
+          <Toast.Root>
+            <Toast.Title>{toast().title}</Toast.Title>
+            <Toast.Description>{toast().description}</Toast.Description>
+          </Toast.Root>
+        )}
+      </Toaster>
       <Footer />
-      <Toast />
     </>
   );
 };

@@ -6,7 +6,7 @@
     "start": "vite",
     "dev": "vite",
     "build": "vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
   },
   "license": "MIT",
   "devDependencies": {
@@ -20,13 +20,20 @@
     "vite-plugin-solid": "^2.8.2"
   },
   "dependencies": {
+    "@ark-ui/solid": "^4.5.1",
     "@corvu/dialog": "^0.2.3",
+    "@corvu/tailwind": "^0.1.5",
     "@kobalte/core": "^0.13.7",
     "@solidjs/router": "^0.14.9",
     "axios": "^1.7.7",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "corvu": "^0.7.1",
     "solid-icons": "^1.1.0",
     "solid-js": "^1.8.11",
     "solid-prevent-scroll": "^0.1.10",
-    "solid-simple-datepicker": "^1.1.1"
+    "solid-simple-datepicker": "^1.1.1",
+    "tailwind-merge": "^2.5.4",
+    "tailwindcss-animate": "^1.0.7"
   }
 }

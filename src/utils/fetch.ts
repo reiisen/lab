@@ -1,4 +1,4 @@
-import { Lab, Reserve } from "./types";
+import { Computer, Lab, Reserve } from "./types";
 const offset = 0;
 
 export async function createLab(lab: Omit<Lab, "id">): Promise<boolean> {
@@ -47,6 +47,20 @@ export async function readLabs(): Promise<Lab[]> {
       "Content-Type": "application/json",
     },
     method: "GET",
+  });
+  return response.json();
+}
+
+export async function readComputers(source: number): Promise<Computer[]> {
+  const filter = {
+    labId: source
+  };
+  const response = await fetch("http://127.0.0.1:8000/computer/filter", {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+    body: JSON.stringify(filter)
   });
   return response.json();
 }

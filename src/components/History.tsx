@@ -11,7 +11,7 @@ import { Portal } from "solid-js/web";
 const overlay = "h-screen w-screen backdrop-blur-sm backdrop-brightness-75 fixed left-1 top-1 -translate-x-1 -translate-y-1"
 
 type HistoryRecord = {
-  Name: string,
+  NIM: string,
   Reason: string,
   Created: string,
   Date: string,
@@ -19,7 +19,7 @@ type HistoryRecord = {
 }
 
 const dummyRecord = {
-  Name: "-",
+  NIM: "-",
   Reason: "-",
   Created: "-",
   Date: "-",
@@ -28,7 +28,7 @@ const dummyRecord = {
 
 function reserveToRecord(reserve: WithTimestamp<Reserve>): HistoryRecord {
   return {
-    Name: reserve.name,
+    NIM: reserve.nim,
     Reason: reserve.reason,
     Created: reserve.createdAt.toString(),
     Date: reserve.date.toString(),

@@ -1,20 +1,27 @@
-export interface Lab {
-  name: string;
-  id: number;
-  code: string;
-  floor: number;
-}
-
 export type Timeslot = {
   length: number
   day: number
   timeslot: number
 }
 
+export interface Lab {
+  name: string;
+  id: number;
+  rate: number;
+}
+
+export interface Computer {
+  name: string;
+  id: number;
+  labId: number;
+  rate: number;
+}
+
 export interface Reserve {
   id: number;
   labId: number;
-  name: string;
+  computerId: number;
+  nim: string;
   reason: string;
   status: "PENDING" | "ACTIVE" | "CONCLUDED" | "CANCELLED";
   length: number

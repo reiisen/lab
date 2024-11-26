@@ -1,12 +1,12 @@
 import { Component, createSignal } from "solid-js"
-import { Lab, Reserve, WithIndex } from "../utils/types"
+import { Computer, Lab, Reserve, WithIndex } from "../utils/types"
 import { IconTypes } from "solid-icons"
 import { FiCpu, FiDatabase, FiActivity, FiCodepen, FiCheck, FiX } from 'solid-icons/fi'
 import { useParams } from "@solidjs/router"
 import { createReserve } from "../utils/fetch"
-import { BasicPopup, Popup } from "./ui/Popup"
+import { BasicPopup, Popup, PopupWithObject } from "./ui/Popup"
 import { CardWithIcon } from "./ui/Card"
-import { SignalInput } from "./ui/TextInput"
+import { SignalInput, TextField } from "./ui/TextInput"
 import { toast } from "./ui/Toast"
 
 const formContainer = `flex flex-col gap-3`
@@ -26,7 +26,7 @@ export const TimeslotCard = <T extends object,>(props: WithIndex<{ value: T, tim
   const triggerCard = () => <CardWithIcon text={timeslotToString(props.index)} icon={FiX}>UNAVAILABLE</CardWithIcon>
   return (
     <div>
-      <Popup<typeof props.value> value={props.value} trigger={triggerCard} content={props.popup} />
+      <PopupWithObject<typeof props.value> value={props.value} trigger={triggerCard} content={props.popup} />
     </div>
   )
 }
@@ -34,7 +34,16 @@ export const TimeslotCard = <T extends object,>(props: WithIndex<{ value: T, tim
 export const LabCard: Component<Lab> = (props) => {
   const labIcon = checkIcon(props.name);
   return (
-    <a href={`labs/pick/${props.id}`}>
+    <a href={`/lab/${props.id}`}>
+      <CardWithIcon text={props.name} icon={labIcon}>Check Here &nbsp;&#10551;</CardWithIcon>
+    </a>
+  )
+}
+
+export const ComputerCard: Component<Computer> = (props) => {
+  const labIcon = checkIcon(props.name);
+  return (
+    <a href={`/lab/${useParams().id}/c/${props.id}`}>
       <CardWithIcon text={props.name} icon={labIcon}>Reserve here &nbsp;&#10551;</CardWithIcon>
     </a>
   )
@@ -45,7 +54,7 @@ export const ReservedCard = (props: WithIndex<Reserve>) => {
     return (
       <>
         <span>{`Reserved`}</span>
-        <span>{`Reserved by: ${props.name}`}</span>
+        <span>{`Reserved by: ${props.nim}`}</span>
         <span>{`Reason: ${props.reason}`}</span>
       </>
     )
@@ -58,7 +67,7 @@ export const ReservedCard = (props: WithIndex<Reserve>) => {
 }
 
 export const VacantCard = (props: { index: number, date: Date, refetcher?: Function }) => {
-  const [name, setName] = createSignal<string>("");
+  const [nim, setNim] = createSignal<string>("");
   const [reason, setReason] = createSignal<string>("");
   const params = useParams();
   const date = new Date(props.date);
@@ -66,22 +75,21 @@ export const VacantCard = (props: { index: number, date: Date, refetcher?: Funct
   const FormPopup: Component = () => {
     return (
       <div class={formContainer}>
-        <label>Name:</label>
-        <SignalInput signal={[name, setName]} />
-        <label>Reason:</label>
-        <SignalInput signal={[reason, setReason]} />
+        <TextField signal={[nim, setNim]} label="NIM" />
+        <TextField signal={[reason, setReason]} label="Tujuan" />
         <button onClick={async () => {
           const result = await createReserve(
             {
               labId: parseInt(params.id),
-              name: name(),
+              computerId: parseInt(params.cid),
+              nim: nim(),
               reason: reason(),
               date: date,
               length: 1
             }
           );
           if (result && props.refetcher) {
-            toast("Nice");
+            toast("tolol");
             props.refetcher();
           }
         }}>
@@ -92,7 +100,7 @@ export const VacantCard = (props: { index: number, date: Date, refetcher?: Funct
   }
   const card = () => <CardWithIcon text={timeslotToString(props.index)} icon={FiCheck}>AVAILABLE</CardWithIcon>
   return (
-    <BasicPopup trigger={card} content={FormPopup} />
+    <Popup trigger={card} content={FormPopup} />
   )
 }
 
@@ -104,8 +112,4 @@ export const RestrictedCard = () => {
 
 function timeslotToString(timeslot: number) {
   return `${timeslot}:00 - ${timeslot + 1}:00`;
-}
-
-function timeToString(timeslot: number) {
-  return `${timeslot}:00`;
 }

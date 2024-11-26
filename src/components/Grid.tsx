@@ -1,16 +1,25 @@
 import { Component, For, Index, JSX } from "solid-js";
-import type { Lab, Reserve } from "../utils/types";
+import type { Computer, Lab, Reserve } from "../utils/types";
 import {
+  ComputerCard,
   LabCard,
   ReservedCard,
   RestrictedCard,
   VacantCard,
-} from "./Curd";
+} from "./Cards";
 
 export const LabGrid: Component<{ labs: Lab[] }> = (props) => {
   return (
-    <div class="grid lg:grid-cols-4 md:grid-cols-3 gap-3 px-8 m-auto">
+    <div class="grid lg:grid-cols-3 md:grid-cols-3 gap-3 px-8 m-auto">
       <For each={props.labs}>{(item) => <LabCard {...item} />}</For>
+    </div>
+  );
+};
+
+export const ComputerGrid: Component<{ computers: Computer[] }> = (props) => {
+  return (
+    <div class="grid lg:grid-cols-4 md:grid-cols-3 gap-3 px-8 m-auto">
+      <For each={props.computers}>{(item) => <ComputerCard {...item} />}</For>
     </div>
   );
 };

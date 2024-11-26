@@ -23,4 +23,3 @@ export const CardWithIcon = (props: { text: string, icon: IconTypes, children?: 
     </div>
   )
 }
-

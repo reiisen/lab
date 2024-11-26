@@ -22,14 +22,13 @@ const overlay = "h-screen w-screen backdrop-blur-sm backdrop-brightness-75 fixed
 export const Slots: Component = () => {
   const [date, setDate] = createSignal<Date>(new Date());
   const [open, setOpen] = createSignal(false);
-  const [courseParam, setCourseParam] = createSignal({
-    labId: parseInt(useParams().id),
-    day: date().getDay(),
-  });
+
   const [filter, setFilter] = createSignal({
     labId: parseInt(useParams().id),
     date: date(),
   });
+
+  const currentYear = new Date().getFullYear();
 
   const [data, { mutate, refetch }] = createResource(filter, readIncompleteReserves);
 
@@ -72,6 +71,8 @@ export const Slots: Component = () => {
       selectedDate={date()}
       onChange={(date) => { setDate(date); refetch(); }}
       onFooterDone={() => setOpen(false)}
+      startYear={currentYear}
+      endYear={currentYear + 3}
     />;
 
   createMemo(() => setFilter({ labId: parseInt(useParams().id), date: date() }));
