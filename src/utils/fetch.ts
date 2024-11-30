@@ -1,4 +1,4 @@
-import { Computer, Lab, Reserve } from "./types";
+import { Computer, Lab, Reserve, Room } from "./types";
 const offset = 0;
 
 export async function createLab(lab: Omit<Lab, "id">): Promise<boolean> {
@@ -51,6 +51,16 @@ export async function readLabs(): Promise<Lab[]> {
   return response.json();
 }
 
+export async function readRooms(): Promise<Room[]> {
+  const response = await fetch("http://127.0.0.1:8000/room/", {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "GET",
+  });
+  return response.json();
+}
+
 export async function readComputers(source: number): Promise<Computer[]> {
   const filter = {
     labId: source
@@ -67,8 +77,10 @@ export async function readComputers(source: number): Promise<Computer[]> {
 
 
 export async function readIncompleteReserves(source: {
-  labId: number;
-  date: Date;
+  labId?: number,
+  computerId?: number,
+  roomId?: number,
+  date: Date
 }): Promise<Reserve[]> {
   const min = new Date(source.date);
   const max = new Date(source.date);
@@ -77,7 +89,9 @@ export async function readIncompleteReserves(source: {
   max.setHours(17, 1);
   max.setDate(max.getDate() + offset);
   const filter = {
-    labId: source.labId,
+    labId: source.labId ? source.labId : undefined,
+    computerId: source.computerId ? source.computerId : undefined,
+    roomId: source.roomId ? source.roomId : undefined,
     date: {
       gte: min,
       lte: max,

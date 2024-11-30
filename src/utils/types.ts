@@ -10,6 +10,12 @@ export interface Lab {
   rate: number;
 }
 
+export interface Room {
+  name: string;
+  id: number;
+  rate: number;
+}
+
 export interface Computer {
   name: string;
   id: number;
@@ -19,8 +25,9 @@ export interface Computer {
 
 export interface Reserve {
   id: number;
-  labId: number;
-  computerId: number;
+  labId?: number;
+  computerId?: number;
+  roomId?: number;
   nim: string;
   reason: string;
   status: "PENDING" | "ACTIVE" | "CONCLUDED" | "CANCELLED";
@@ -31,6 +38,13 @@ export interface Reserve {
 export interface Timestamp {
   createdAt: Date
   updatedAt: Date
+}
+
+export type Filter = {
+  labId?: number,
+  computerId?: number,
+  roomId?: number,
+  date: Date
 }
 
 export type WithTimeslot<T> = T & Timeslot;

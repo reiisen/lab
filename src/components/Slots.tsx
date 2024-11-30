@@ -16,17 +16,27 @@ import { Error } from "./Error";
 import { ScheduleGrid } from "./Grid";
 import { SimpleDatepicker } from "solid-simple-datepicker";
 import { Portal } from "solid-js/web";
+import { Filter } from "../utils/types";
 
 const overlay = "h-screen w-screen backdrop-blur-sm backdrop-brightness-75 fixed left-1 top-1 -translate-x-1 -translate-y-1"
+
 
 export const Slots: Component = () => {
   const [date, setDate] = createSignal<Date>(new Date());
   const [open, setOpen] = createSignal(false);
+  const params = useParams();
 
-  const [filter, setFilter] = createSignal({
-    labId: parseInt(useParams().id),
-    date: date(),
+  const [filter, setFilter] = createSignal<Filter>({
+    labId: useParams().id ? parseInt(useParams().id) : undefined,
+    computerId: useParams().cid ? parseInt(useParams().cid) : undefined,
+    roomId: useParams().rid ? parseInt(useParams().rid) : undefined,
+    date: date()
   });
+
+  // const [filter, setFilter] = createSignal({
+  //   labId: parseInt(useParams().id),
+  //   date: date(),
+  // });
 
   const currentYear = new Date().getFullYear();
 
@@ -75,7 +85,12 @@ export const Slots: Component = () => {
       endYear={currentYear + 3}
     />;
 
-  createMemo(() => setFilter({ labId: parseInt(useParams().id), date: date() }));
+  createMemo(() => setFilter({
+    labId: useParams().id ? parseInt(useParams().id) : undefined,
+    computerId: useParams().cid ? parseInt(useParams().cid) : undefined,
+    roomId: useParams().rid ? parseInt(useParams().rid) : undefined,
+    date: date()
+  }))
 
   createEffect(() => {
     console.log('Current params:', filter());
@@ -89,7 +104,7 @@ export const Slots: Component = () => {
         <Match
           when={data.state === "ready"}
         >
-          <ScheduleGrid data={data()!} date={date()} refetcher={refetch} />
+          <ScheduleGrid data={data()!} filter={filter()} refetcher={refetch} />
         </Match>
         <Match when={data.loading}>
           <Loading />

@@ -1,18 +1,10 @@
 import { Dialog } from "@ark-ui/solid";
 import { FiX } from "solid-icons/fi";
-import { Component, createSignal, Show } from "solid-js";
+import { Component, createSignal, JSX, Show, Signal } from "solid-js";
 import { Portal } from "solid-js/web";
 import createPreventScroll from "solid-prevent-scroll";
+import { popupClose, popupContent, popupOverlay } from "./styles/Popup";
 
-const popupContent = `
-  fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
-  flex flex-col bg-neutral-100 rounded-lg p-6
-`
-const popupOverlay = `h-screen w-screen backdrop-blur-sm backdrop-brightness-75 fixed left-1 top-1 -translate-x-1 -translate-y-1`
-const popupClose = `
-  absolute top-0 right-0 bg-neutral-200 w-10 h-10 rounded-lg flex items-center
-  justify-center hover:brightness-75 transition-brightness duration-200
-`;
 
 type PopupProps = {
   trigger: Component,
@@ -48,18 +40,7 @@ export const Popup = (props: PopupProps) => {
           }}>
         <props.trigger />
       </div>
-      <Dialog.Root open={open()} onOpenChange={() => setOpen(false)}>
-        <Portal>
-          <Dialog.Backdrop />
-          <Dialog.Positioner>
-            <Dialog.Content>
-              {props.title ? <Dialog.Title>Dialog Title</Dialog.Title> : <></>}
-              <props.content />
-              <Dialog.CloseTrigger>Close</Dialog.CloseTrigger>
-            </Dialog.Content>
-          </Dialog.Positioner>
-        </Portal>
-      </Dialog.Root>
+      <PopupRoot openSignal={[open, setOpen]}>{() => <props.content />}</PopupRoot>
     </>
   )
 }
@@ -85,19 +66,33 @@ export const PopupWithObject = <T extends object,>(props: PopupWithObjectProps<T
           }}>
         <props.trigger />
       </div>
-      <Dialog.Root open={open()} onOpenChange={() => setOpen(false)}>
+      <PopupRoot<typeof props.value> openSignal={[open, setOpen]} value={props.value} >{(value) => <props.content {...value!} />}</PopupRoot>
+    </>
+  )
+}
+
+const PopupRoot = <T extends object,>(props: { openSignal: Signal<boolean>, value?: T, children?: (value?: T) => JSX.Element }) => {
+  const [open, setOpen] = props.openSignal;
+  return (
+    <Dialog.Root open={open()} onOpenChange={() => setOpen(false)}>
+      <Show when={open()}>
         <Portal>
-          <Dialog.Backdrop />
+          <Dialog.Backdrop class={popupOverlay} />
           <Dialog.Positioner>
-            <Dialog.Content>
-              <Dialog.Title>Dialog Title</Dialog.Title>
-              <props.content {...props.value} />
+            <Dialog.Content class={popupContent}>
+              {
+                props.value && props.children ?
+                  props.children(props.value) :
+                  props.children ?
+                    props.children() :
+                    <></>
+              }
               <Dialog.CloseTrigger>Close</Dialog.CloseTrigger>
             </Dialog.Content>
           </Dialog.Positioner>
         </Portal>
-      </Dialog.Root>
-    </>
+      </Show>
+    </Dialog.Root>
   )
 }
 

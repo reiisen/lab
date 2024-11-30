@@ -1,10 +1,11 @@
 import { Component, For, Index, JSX } from "solid-js";
-import type { Computer, Lab, Reserve } from "../utils/types";
+import type { Computer, Filter, Lab, Reserve, Room } from "../utils/types";
 import {
   ComputerCard,
   LabCard,
   ReservedCard,
   RestrictedCard,
+  RoomCard,
   VacantCard,
 } from "./Cards";
 
@@ -12,6 +13,23 @@ export const LabGrid: Component<{ labs: Lab[] }> = (props) => {
   return (
     <div class="grid lg:grid-cols-3 md:grid-cols-3 gap-3 px-8 m-auto">
       <For each={props.labs}>{(item) => <LabCard {...item} />}</For>
+    </div>
+  );
+};
+
+export const RoomGrid: Component<{ rooms: Room[] }> = (props) => {
+  return (
+    <div class="grid lg:grid-cols-3 md:grid-cols-3 gap-3 px-8 m-auto">
+      <For each={props.rooms}>{(item) => <LabCard {...item} />}</For>
+    </div>
+  );
+};
+
+export const CombinedGrid: Component<{ rooms: Room[], labs: Lab[] }> = (props) => {
+  return (
+    <div class="grid lg:grid-cols-3 md:grid-cols-3 gap-3 px-8 m-auto">
+      <For each={props.labs}>{(item) => <LabCard {...item} />}</For>
+      <For each={props.rooms}>{(item) => <RoomCard {...item} />}</For>
     </div>
   );
 };
@@ -26,7 +44,7 @@ export const ComputerGrid: Component<{ computers: Computer[] }> = (props) => {
 
 export const ScheduleGrid: Component<{
   data: Reserve[]
-  date: Date
+  filter: Filter
   refetcher?: Function
 }> = (props) => {
 
@@ -45,7 +63,7 @@ export const ScheduleGrid: Component<{
     <div class="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-3 px-8 m-auto">
       <Index each={map}>
         {(value, index) => {
-          return value() ? value() : <VacantCard index={index + 7} date={props.date} refetcher={props.refetcher ? props.refetcher : undefined} />;
+          return value() ? value() : <VacantCard index={index + 7} filter={props.filter} onClick={props.refetcher ? props.refetcher : undefined} />;
         }}
       </Index>
       <RestrictedCard />

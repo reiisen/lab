@@ -3,7 +3,7 @@ import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import { Router, Route } from "@solidjs/router";
 import { Home } from "./components/Home";
-import { Labs } from "./components/Labs";
+import { Catalog, Labs } from "./components/Catalog";
 import { Slots } from "./components/Slots";
 import { History } from "./components/History";
 import { Toast, Toaster } from "@ark-ui/solid";
@@ -24,9 +24,10 @@ const App: Component = () => {
         <div class={inner}>
           <Router>
             <Route path="/" component={Home} />
-            <Route path="/labs" component={Labs} />
+            <Route path="/labs" component={Catalog} />
             <Route path="/history" component={History} />
             <Route path="/lab/:id" component={Computers} />
+            <Route path="/room/:rid" component={Slots} />
             <Route path="/lab/:id/c/:cid" component={Slots} />
           </Router>
         </div>

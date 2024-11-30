@@ -1,5 +1,5 @@
 import { Component, createSignal } from "solid-js"
-import { Computer, Lab, Reserve, WithIndex } from "../utils/types"
+import { Computer, Filter, Lab, Reserve, Room, WithIndex } from "../utils/types"
 import { IconTypes } from "solid-icons"
 import { FiCpu, FiDatabase, FiActivity, FiCodepen, FiCheck, FiX } from 'solid-icons/fi'
 import { useParams } from "@solidjs/router"
@@ -40,6 +40,15 @@ export const LabCard: Component<Lab> = (props) => {
   )
 }
 
+export const RoomCard: Component<Room> = (props) => {
+  const labIcon = checkIcon(props.name);
+  return (
+    <a href={`/room/${props.id}`}>
+      <CardWithIcon text={props.name} icon={labIcon}>Check Here &nbsp;&#10551;</CardWithIcon>
+    </a>
+  )
+}
+
 export const ComputerCard: Component<Computer> = (props) => {
   const labIcon = checkIcon(props.name);
   return (
@@ -66,11 +75,11 @@ export const ReservedCard = (props: WithIndex<Reserve>) => {
   )
 }
 
-export const VacantCard = (props: { index: number, date: Date, refetcher?: Function }) => {
+export const VacantCard = (props: { index: number, filter: Filter, onClick?: Function }) => {
   const [nim, setNim] = createSignal<string>("");
   const [reason, setReason] = createSignal<string>("");
   const params = useParams();
-  const date = new Date(props.date);
+  const date = new Date(props.filter.date);
   date.setHours(props.index, 0);
   const FormPopup: Component = () => {
     return (
@@ -80,17 +89,18 @@ export const VacantCard = (props: { index: number, date: Date, refetcher?: Funct
         <button onClick={async () => {
           const result = await createReserve(
             {
-              labId: parseInt(params.id),
-              computerId: parseInt(params.cid),
+              labId: props.filter.labId ? props.filter.labId : undefined,
+              computerId: props.filter.computerId ? props.filter.computerId : undefined,
+              roomId: props.filter.roomId ? props.filter.roomId : undefined,
               nim: nim(),
               reason: reason(),
               date: date,
               length: 1
             }
           );
-          if (result && props.refetcher) {
+          if (result && props.onClick) {
             toast("tolol");
-            props.refetcher();
+            props.onClick();
           }
         }}>
           Reserve
