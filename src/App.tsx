@@ -7,7 +7,7 @@ import { Catalog, Labs } from "./components/Catalog";
 import { Slots } from "./components/Slots";
 import { History } from "./components/History";
 import { Toast, Toaster } from "@ark-ui/solid";
-import { toaster } from "./components/ui/Toast";
+import { toaster, ToasterElement } from "./components/ui/Toast";
 import { Computers } from "./components/Computers";
 
 const base = "relative bg-white min-h-screen min-w-screen flex flex-col"
@@ -33,14 +33,9 @@ const App: Component = () => {
         </div>
 
       </div>
-      <Toaster toaster={toaster}>
-        {(toast) => (
-          <Toast.Root>
-            <Toast.Title>{toast().title}</Toast.Title>
-            <Toast.Description>{toast().description}</Toast.Description>
-          </Toast.Root>
-        )}
-      </Toaster>
+
+      <ToasterElement />
+
       <Footer />
     </>
   );

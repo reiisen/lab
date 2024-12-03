@@ -1,5 +1,6 @@
 import { Field } from "@ark-ui/solid";
 import { Component, Signal } from "solid-js";
+import { _field_description, _field_input, _field_label, _field_root } from "./styles/Input";
 
 export const SignalInput: Component<{ signal: Signal<string> }> = (props) => {
   const [text, setText] = props.signal;
@@ -15,14 +16,14 @@ type TextFieldProps = {
   description?: string
 }
 
-export const TextField: Component<TextFieldProps> = (props) => {
+export const Input: Component<TextFieldProps> = (props) => {
   const [text, setText] = props.signal;
   const handleType = (e: any) => setText(e.target.value);
   return (
-    <Field.Root class="flex flex-col">
-      {props.label ? <Field.Label>{props.label}</Field.Label> : <></>}
-      <Field.Input onInput={handleType} value={text()} />
-      {props.description ? <Field.HelperText>{props.description}</Field.HelperText> : <></>}
+    <Field.Root class={_field_root}>
+      {props.label ? <Field.Label class={_field_label}>{props.label}</Field.Label> : <></>}
+      <Field.Input onInput={handleType} value={text()} class={_field_input} />
+      {props.description ? <Field.HelperText class={_field_description}>{props.description}</Field.HelperText> : <></>}
     </Field.Root>
   )
 }

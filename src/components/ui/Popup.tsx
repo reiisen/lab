@@ -3,7 +3,7 @@ import { FiX } from "solid-icons/fi";
 import { Component, createSignal, JSX, Show, Signal } from "solid-js";
 import { Portal } from "solid-js/web";
 import createPreventScroll from "solid-prevent-scroll";
-import { popupClose, popupContent, popupOverlay } from "./styles/Popup";
+import { _popup_x, _popup_content, _popup_overlay, _popup_header } from "./styles/Popup";
 
 
 type PopupProps = {
@@ -17,6 +17,17 @@ type PopupWithObjectProps<T extends object> = {
   trigger: Component,
   content: Component<T>,
   title?: string
+}
+
+const Header = (props: { title?: string }) => {
+  return (
+    <div class={_popup_header}>
+      <span>{props.title ? props.title : "Info"}</span>
+      <Dialog.CloseTrigger class={_popup_x}>
+        <FiX size={24} color={"#666666"} />
+      </Dialog.CloseTrigger>
+    </div>
+  )
 }
 
 export const Popup = (props: PopupProps) => {
@@ -40,7 +51,7 @@ export const Popup = (props: PopupProps) => {
           }}>
         <props.trigger />
       </div>
-      <PopupRoot openSignal={[open, setOpen]}>{() => <props.content />}</PopupRoot>
+      <PopupRoot title={props.title} openSignal={[open, setOpen]}>{() => <props.content />}</PopupRoot>
     </>
   )
 }
@@ -71,15 +82,16 @@ export const PopupWithObject = <T extends object,>(props: PopupWithObjectProps<T
   )
 }
 
-const PopupRoot = <T extends object,>(props: { openSignal: Signal<boolean>, value?: T, children?: (value?: T) => JSX.Element }) => {
+const PopupRoot = <T extends object,>(props: { openSignal: Signal<boolean>, title?: string, value?: T, children?: (value?: T) => JSX.Element }) => {
   const [open, setOpen] = props.openSignal;
   return (
     <Dialog.Root open={open()} onOpenChange={() => setOpen(false)}>
       <Show when={open()}>
         <Portal>
-          <Dialog.Backdrop class={popupOverlay} />
+          <Dialog.Backdrop class={_popup_overlay} />
           <Dialog.Positioner>
-            <Dialog.Content class={popupContent}>
+            <Dialog.Content class={_popup_content}>
+              <Header title={props.title ? props.title : undefined} />
               {
                 props.value && props.children ?
                   props.children(props.value) :
@@ -87,7 +99,6 @@ const PopupRoot = <T extends object,>(props: { openSignal: Signal<boolean>, valu
                     props.children() :
                     <></>
               }
-              <Dialog.CloseTrigger>Close</Dialog.CloseTrigger>
             </Dialog.Content>
           </Dialog.Positioner>
         </Portal>
@@ -175,9 +186,9 @@ export const BasicPopup = (props: { trigger: Component, content: Component }) =>
       </div>
       <Show when={open()}>
         <Portal>
-          <div class={popupOverlay} onClick={() => setOpen(false)} />
-          <div class={popupContent}>
-            <div class={`cursor-pointer ${popupClose}`} onClick={() => setOpen(false)}><FiX /></div>
+          <div class={_popup_overlay} onClick={() => setOpen(false)} />
+          <div class={_popup_content}>
+            <div class={`cursor-pointer ${_popup_x}`} onClick={() => setOpen(false)}><FiX /></div>
             <props.content />
           </div>
         </Portal>

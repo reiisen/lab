@@ -6,7 +6,7 @@ import { useParams } from "@solidjs/router"
 import { createReserve } from "../utils/fetch"
 import { BasicPopup, Popup, PopupWithObject } from "./ui/Popup"
 import { CardWithIcon } from "./ui/Card"
-import { SignalInput, TextField } from "./ui/TextInput"
+import { SignalInput, Input } from "./ui/Input"
 import { toast } from "./ui/Toast"
 
 const formContainer = `flex flex-col gap-3`
@@ -84,8 +84,8 @@ export const VacantCard = (props: { index: number, filter: Filter, onClick?: Fun
   const FormPopup: Component = () => {
     return (
       <div class={formContainer}>
-        <TextField signal={[nim, setNim]} label="NIM" />
-        <TextField signal={[reason, setReason]} label="Tujuan" />
+        <Input signal={[nim, setNim]} label="NIM" />
+        <Input signal={[reason, setReason]} label="Tujuan" />
         <button onClick={async () => {
           const result = await createReserve(
             {
@@ -99,9 +99,9 @@ export const VacantCard = (props: { index: number, filter: Filter, onClick?: Fun
             }
           );
           if (result && props.onClick) {
-            toast("tolol");
+            toast("Success", "Reservation Successfully Booked");
             props.onClick();
-          }
+          } else toast("Failed", undefined, "error");
         }}>
           Reserve
         </button>
@@ -110,7 +110,7 @@ export const VacantCard = (props: { index: number, filter: Filter, onClick?: Fun
   }
   const card = () => <CardWithIcon text={timeslotToString(props.index)} icon={FiCheck}>AVAILABLE</CardWithIcon>
   return (
-    <Popup trigger={card} content={FormPopup} />
+    <Popup title="Fill the form" trigger={card} content={FormPopup} />
   )
 }
 

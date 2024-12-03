@@ -1,16 +1,30 @@
-import { createToaster, Toast, Toaster } from '@ark-ui/solid'
+import { createToaster, CreateToasterReturn, Toast, Toaster } from '@ark-ui/solid'
 import { createSignal } from 'solid-js'
+import { _toast_container, _toast_description, _toast_title } from './styles/Toast'
 
 export const toaster = createToaster({
-  placement: 'bottom-end',
-  overlap: true,
+  placement: 'top-end',
+  overlap: false,
   gap: 24,
 })
 
-export function toast(message: string, description?: string) {
+export function toast(title: string, description?: string, type?: string) {
   toaster.create({
-    title: message,
+    title: title,
     description: description ? description : "",
-    type: 'info',
+    type: type ? type : 'info',
   })
+}
+
+export const ToasterElement = () => {
+  return (
+    <Toaster toaster={toaster}>
+      {(toast) => (
+        <Toast.Root class={_toast_container}>
+          <Toast.Title class={_toast_title}>{toast().title}</Toast.Title>
+          <Toast.Description class={_toast_description}>{toast().description}</Toast.Description>
+        </Toast.Root>
+      )}
+    </Toaster>
+  )
 }

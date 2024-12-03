@@ -1,12 +1,13 @@
 import { createMemo, createResource, createSignal, Show } from "solid-js"
-import { Lab, Reserve, WithTimestamp } from "../utils/types"
+import { Computer, Lab, Reserve, Room, WithTimestamp } from "../utils/types"
 import { DropdownObject } from "./ui/Dropdown"
-import { readLabs, readReserves } from "../utils/fetch"
+import { readComputers, readLabs, readReserves, readRooms } from "../utils/fetch"
 import { Table } from "./ui/Table";
 import { SimpleDatepicker } from "solid-simple-datepicker";
 import { Loading } from "./Loading";
 import "solid-simple-datepicker/styles.css";
 import { Portal } from "solid-js/web";
+import { Switch } from "./ui/Switch";
 
 const overlay = "h-screen w-screen backdrop-blur-sm backdrop-brightness-75 fixed left-1 top-1 -translate-x-1 -translate-y-1"
 
@@ -38,19 +39,24 @@ function reserveToRecord(reserve: WithTimestamp<Reserve>): HistoryRecord {
 
 export const History = () => {
   const [labs] = createResource(readLabs, { initialValue: [] });
+  const [rooms] = createResource(readRooms, { initialValue: [] });
   return (
     <div class="flex flex-col w-3/4">
       <Show when={labs.state === 'ready'} fallback={<Loading />}>
-        <HistoryRoot labs={labs()} />
+        <HistoryRoot labs={labs()} rooms={rooms()} />
       </Show>
     </div>
   )
 }
 
-const HistoryRoot = (props: { labs: Lab[] }) => {
+const HistoryRoot = (props: { labs: Lab[], rooms: Room[] }) => {
   const [lab, setLab] = createSignal<Lab>(props.labs[0]);
+  const [room, setRoom] = createSignal<Room>(props.rooms[0]);
   const [date, setDate] = createSignal<Date>(new Date());
   const [open, setOpen] = createSignal(false);
+
+  const [computers] = createResource(lab().id, readComputers, { initialValue: [] });
+  const [computer, setComputer] = createSignal<Computer>(computers()[0]);
 
   const [filter, setFilter] = createSignal({ labId: lab().id, date: date() });
 
@@ -62,6 +68,7 @@ const HistoryRoot = (props: { labs: Lab[] }) => {
     <>
       <div class="flex flex-row">
         <DropdownObject data={props.labs} signal={[lab, setLab]} />
+        <DropdownObject data={props.rooms} signal={[room, setRoom]} />
         <button
           class="select__trigger"
           onClick={() => {
