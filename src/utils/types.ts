@@ -40,6 +40,15 @@ export interface Timestamp {
   updatedAt: Date
 }
 
+export type FilterLabel = {
+  filter: {
+    labId?: number,
+    computerId?: number,
+    roomId?: number,
+  }
+  name: string
+}
+
 export type Filter = {
   labId?: number,
   computerId?: number,

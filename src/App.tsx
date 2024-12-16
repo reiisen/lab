@@ -9,6 +9,7 @@ import { History } from "./components/History";
 import { Toast, Toaster } from "@ark-ui/solid";
 import { toaster, ToasterElement } from "./components/ui/Toast";
 import { Computers } from "./components/Computers";
+import { Manager } from "./components/Manager";
 
 const base = "relative bg-white min-h-screen min-w-screen flex flex-col"
 const inner = "flex-1 w-full flex flex-col items-center justify-center"
@@ -29,6 +30,7 @@ const App: Component = () => {
             <Route path="/lab/:id" component={Computers} />
             <Route path="/room/:rid" component={Slots} />
             <Route path="/lab/:id/c/:cid" component={Slots} />
+            <Route path="/manage" component={Manager} />
           </Router>
         </div>
 

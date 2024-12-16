@@ -34,6 +34,7 @@
     "solid-prevent-scroll": "^0.1.10",
     "solid-simple-datepicker": "^1.1.1",
     "tailwind-merge": "^2.5.4",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "tree-sitter-cli": "^0.24.4"
   }
 }

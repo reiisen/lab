@@ -1,5 +1,5 @@
 import { Component, createSignal } from "solid-js"
-import { Computer, Filter, Lab, Reserve, Room, WithIndex } from "../utils/types"
+import { Computer, Filter, FilterLabel, Lab, Reserve, Room, WithIndex } from "../utils/types"
 import { IconTypes } from "solid-icons"
 import { FiCpu, FiDatabase, FiActivity, FiCodepen, FiCheck, FiX } from 'solid-icons/fi'
 import { useParams } from "@solidjs/router"

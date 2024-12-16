@@ -111,8 +111,10 @@ export async function readIncompleteReserves(source: {
 }
 
 export async function readCompleteReserves(source: {
-  labId: number;
-  date: Date;
+  labId?: number,
+  computerId?: number,
+  roomId?: number,
+  date: Date
 }): Promise<Reserve[]> {
   const min = new Date(source.date);
   const max = new Date(source.date);
@@ -121,7 +123,9 @@ export async function readCompleteReserves(source: {
   max.setHours(17);
   max.setDate(max.getDate() + offset);
   const filter = {
-    labId: source.labId,
+    labId: source.labId ? source.labId : undefined,
+    computerId: source.computerId ? source.computerId : undefined,
+    roomId: source.roomId ? source.roomId : undefined,
     date: {
       gte: min,
       lte: max,
@@ -141,8 +145,10 @@ export async function readCompleteReserves(source: {
 }
 
 export async function readReserves(source: {
-  labId: number;
-  date: Date;
+  labId?: number,
+  computerId?: number,
+  roomId?: number,
+  date: Date
 }): Promise<Reserve[]> {
   const min = new Date(source.date);
   const max = new Date(source.date);
@@ -151,7 +157,9 @@ export async function readReserves(source: {
   max.setHours(17);
   max.setDate(max.getDate() + offset);
   const filter = {
-    labId: source.labId,
+    labId: source.labId ? source.labId : undefined,
+    computerId: source.computerId ? source.computerId : undefined,
+    roomId: source.roomId ? source.roomId : undefined,
     date: {
       gte: min,
       lte: max,
