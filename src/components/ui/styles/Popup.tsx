@@ -23,6 +23,8 @@ export const _popup_x = `
   bg-neutral-300
   rounded-lg
   p-1
+  hover:brightness-75
+  transition-all
 `;
 
 export const _popup_header = `
@@ -32,3 +34,9 @@ export const _popup_header = `
   mb-5
   pb-3
 `;
+
+export const _popup_title = `
+  text-xl
+  font-bold
+  text-neutral-700
+`

@@ -3,7 +3,7 @@ import { FiX } from "solid-icons/fi";
 import { Component, createSignal, JSX, Show, Signal } from "solid-js";
 import { Portal } from "solid-js/web";
 import createPreventScroll from "solid-prevent-scroll";
-import { _popup_x, _popup_content, _popup_overlay, _popup_header } from "./styles/Popup";
+import { _popup_x, _popup_content, _popup_title, _popup_overlay, _popup_header } from "./styles/Popup";
 
 
 type PopupProps = {
@@ -22,7 +22,7 @@ type PopupWithObjectProps<T extends object> = {
 const Header = (props: { title?: string }) => {
   return (
     <div class={_popup_header}>
-      <span>{props.title ? props.title : "Info"}</span>
+      <span class={_popup_title}>{props.title ? props.title : "Info"}</span>
       <Dialog.CloseTrigger class={_popup_x}>
         <FiX size={24} color={"#666666"} />
       </Dialog.CloseTrigger>
@@ -32,6 +32,7 @@ const Header = (props: { title?: string }) => {
 
 export const Popup = (props: PopupProps) => {
   const [open, setOpen] = createSignal<boolean>(false);
+
   return (
     <>
       <div
@@ -39,7 +40,6 @@ export const Popup = (props: PopupProps) => {
         onClick={
           () => {
             setOpen(true);
-
             const handleEscape = (event: KeyboardEvent) => {
               if (event.key === 'Escape') {
                 setOpen(false);
@@ -65,7 +65,6 @@ export const PopupWithObject = <T extends object,>(props: PopupWithObjectProps<T
         onClick={
           () => {
             setOpen(true);
-
             const handleEscape = (event: KeyboardEvent) => {
               if (event.key === 'Escape') {
                 setOpen(false);

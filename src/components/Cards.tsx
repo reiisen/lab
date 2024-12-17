@@ -1,5 +1,5 @@
 import { Component, createSignal } from "solid-js"
-import { Computer, Filter, FilterLabel, Lab, Reserve, Room, WithIndex } from "../utils/types"
+import { Computer, Filter, FilterLabel, Lab, Reserve, Room, WithInactive, WithIndex } from "../utils/types"
 import { IconTypes } from "solid-icons"
 import { FiCpu, FiDatabase, FiActivity, FiCodepen, FiCheck, FiX } from 'solid-icons/fi'
 import { useParams } from "@solidjs/router"
@@ -8,22 +8,13 @@ import { BasicPopup, Popup, PopupWithObject } from "./ui/Popup"
 import { CardWithIcon } from "./ui/Card"
 import { SignalInput, Input } from "./ui/Input"
 import { toast } from "./ui/Toast"
+import { FaSolidComputer } from "solid-icons/fa"
+import { IoCube, IoCubeOutline } from 'solid-icons/io'
 
 const formContainer = `flex flex-col gap-3`
 
-const jaringanRegex = /Jaringan/;
-const basisRegex = /Basis/;
-const dasarRegex = /Dasar/;
-
-function checkIcon(str: string): IconTypes {
-  if (jaringanRegex.test(str)) return FiActivity;
-  if (basisRegex.test(str)) return FiDatabase;
-  if (dasarRegex.test(str)) return FiCpu;
-  return FiCodepen;
-}
-
 export const TimeslotCard = <T extends object,>(props: WithIndex<{ value: T, timeslot: number, popup: Component<T> }>) => {
-  const triggerCard = () => <CardWithIcon text={timeslotToString(props.index)} icon={FiX}>UNAVAILABLE</CardWithIcon>
+  const triggerCard = () => <CardWithIcon text={timeslotToString(props.index)} icon={FiX} class="hover:bg-red-300" iconColor="#FF0000">UNAVAILABLE</CardWithIcon>
   return (
     <div>
       <PopupWithObject<typeof props.value> value={props.value} trigger={triggerCard} content={props.popup} />
@@ -31,29 +22,35 @@ export const TimeslotCard = <T extends object,>(props: WithIndex<{ value: T, tim
   )
 }
 
-export const LabCard: Component<Lab> = (props) => {
-  const labIcon = checkIcon(props.name);
+export const LabCard: Component<WithInactive<Lab>> = (props) => {
+  if (props.inactive) {
+    return <CardWithIcon text={props.name} icon={IoCube} class="brightness-50 hover:brightness-10">Check Here &nbsp;&#10551;</CardWithIcon>
+  }
   return (
     <a href={`/lab/${props.id}`}>
-      <CardWithIcon text={props.name} icon={labIcon}>Check Here &nbsp;&#10551;</CardWithIcon>
+      <CardWithIcon text={props.name} icon={IoCube}>Check Here &nbsp;&#10551;</CardWithIcon>
     </a>
   )
 }
 
-export const RoomCard: Component<Room> = (props) => {
-  const labIcon = checkIcon(props.name);
+export const RoomCard: Component<WithInactive<Room>> = (props) => {
+  if (props.inactive) {
+    return <CardWithIcon text={props.name} icon={IoCubeOutline} class="brightness-50 hover:brightness-10">Check Here &nbsp;&#10551;</CardWithIcon>
+  }
   return (
     <a href={`/room/${props.id}`}>
-      <CardWithIcon text={props.name} icon={labIcon}>Check Here &nbsp;&#10551;</CardWithIcon>
+      <CardWithIcon text={props.name} icon={IoCubeOutline}>Check Here &nbsp;&#10551;</CardWithIcon>
     </a>
   )
 }
 
-export const ComputerCard: Component<Computer> = (props) => {
-  const labIcon = checkIcon(props.name);
+export const ComputerCard: Component<WithInactive<Computer>> = (props) => {
+  if (props.inactive) {
+    return <CardWithIcon text={props.name} icon={FaSolidComputer} class="brightness-50 hover:brightness-10">Check Here &nbsp;&#10551;</CardWithIcon>
+  }
   return (
     <a href={`/lab/${useParams().id}/c/${props.id}`}>
-      <CardWithIcon text={props.name} icon={labIcon}>Reserve here &nbsp;&#10551;</CardWithIcon>
+      <CardWithIcon text={props.name} icon={FaSolidComputer}>Reserve here &nbsp;&#10551;</CardWithIcon>
     </a>
   )
 }
@@ -108,7 +105,7 @@ export const VacantCard = (props: { index: number, filter: Filter, onClick?: Fun
       </div>
     )
   }
-  const card = () => <CardWithIcon text={timeslotToString(props.index)} icon={FiCheck}>AVAILABLE</CardWithIcon>
+  const card = () => <CardWithIcon text={timeslotToString(props.index)} icon={FiCheck} class="hover:bg-green-300" iconColor="#00FF00">AVAILABLE</CardWithIcon>
   return (
     <Popup title="Fill the form" trigger={card} content={FormPopup} />
   )
@@ -116,7 +113,7 @@ export const VacantCard = (props: { index: number, filter: Filter, onClick?: Fun
 
 export const RestrictedCard = () => {
   return (
-    <CardWithIcon text="Restricted" icon={FiX} />
+    <CardWithIcon text="Restricted" icon={FiX} class="hover:brightness-50" />
   )
 }
 

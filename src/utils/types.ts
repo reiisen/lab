@@ -60,3 +60,4 @@ export type WithTimeslot<T> = T & Timeslot;
 export type WithDate<T> = T & Date;
 export type WithIndex<T> = T & { index: number };
 export type WithTimestamp<T> = T & Timestamp
+export type WithInactive<T> = T & { inactive: boolean }

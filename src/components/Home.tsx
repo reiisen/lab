@@ -14,8 +14,7 @@ export const Home: Component = () => {
   return (
     <>
       <div class={welcomeContainer}>
-        <div class={welcomeTextTop}>SELAMAT DATANG DI</div>
-        <div class={welcomeTextBottom}>LABORATORIUM INFORMATIKA</div>
+        <div class={welcomeTextBottom}>Reservasi Lab</div>
       </div>
       <div class={cardGrid}>
         <a href="/labs" class={cardLink}>

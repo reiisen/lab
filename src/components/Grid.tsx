@@ -1,5 +1,5 @@
 import { Component, For, Index, JSX } from "solid-js";
-import type { Computer, Filter, Lab, Reserve, Room } from "../utils/types";
+import type { Computer, Filter, Lab, Reserve, Room, WithInactive } from "../utils/types";
 import {
   ComputerCard,
   LabCard,
@@ -9,7 +9,7 @@ import {
   VacantCard,
 } from "./Cards";
 
-export const LabGrid: Component<{ labs: Lab[] }> = (props) => {
+export const LabGrid: Component<{ labs: WithInactive<Lab>[] }> = (props) => {
   return (
     <div class="grid lg:grid-cols-3 md:grid-cols-3 gap-3 px-8 m-auto">
       <For each={props.labs}>{(item) => <LabCard {...item} />}</For>
@@ -17,7 +17,7 @@ export const LabGrid: Component<{ labs: Lab[] }> = (props) => {
   );
 };
 
-export const RoomGrid: Component<{ rooms: Room[] }> = (props) => {
+export const RoomGrid: Component<{ rooms: WithInactive<Room>[] }> = (props) => {
   return (
     <div class="grid lg:grid-cols-3 md:grid-cols-3 gap-3 px-8 m-auto">
       <For each={props.rooms}>{(item) => <LabCard {...item} />}</For>
@@ -25,7 +25,7 @@ export const RoomGrid: Component<{ rooms: Room[] }> = (props) => {
   );
 };
 
-export const CombinedGrid: Component<{ rooms: Room[], labs: Lab[] }> = (props) => {
+export const CombinedGrid: Component<{ rooms: WithInactive<Room>[], labs: WithInactive<Lab>[] }> = (props) => {
   return (
     <div class="grid lg:grid-cols-3 md:grid-cols-3 gap-3 px-8 m-auto">
       <For each={props.labs}>{(item) => <LabCard {...item} />}</For>
@@ -34,7 +34,7 @@ export const CombinedGrid: Component<{ rooms: Room[], labs: Lab[] }> = (props) =
   );
 };
 
-export const ComputerGrid: Component<{ computers: Computer[] }> = (props) => {
+export const ComputerGrid: Component<{ computers: WithInactive<Computer>[] }> = (props) => {
   return (
     <div class="grid lg:grid-cols-4 md:grid-cols-3 gap-3 px-8 m-auto">
       <For each={props.computers}>{(item) => <ComputerCard {...item} />}</For>

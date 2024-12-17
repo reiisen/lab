@@ -1,6 +1,11 @@
-import { createResource, createSignal, For, Setter, Show, Signal } from "solid-js"
-import { readLabs, readRooms } from "../utils/fetch"
+import { createResource, createSignal, For, Index, Setter, Show, Signal } from "solid-js"
+import { deleteLab, deleteRoom, readLabs, readRooms, toggleLab, toggleRoom, updateLab, updateRoom } from "../utils/fetch"
 import { Lab, Room } from "../utils/types"
+import { FiTool, FiTrash2 } from "solid-icons/fi";
+import { CgUnavailable } from 'solid-icons/cg'
+import { Editable } from "./ui/Editable";
+import { Popup } from "./ui/Popup";
+import { Portal } from "solid-js/web";
 
 const opts = ['Labs', 'Rooms'];
 
@@ -13,91 +18,168 @@ const read = async (): Promise<Data> => {
   return {
     labs: await readLabs(),
     rooms: await readRooms()
-  }
+  };
 };
 
-export const Selector = (props: { setter: Setter<string>, selected: string }) => {
+export const Manager = () => {
   return (
-    <div class="flex space-x-4 mb-4 bg-gray-100 p-2 rounded-lg">
+    <Root />
+  );
+};
+
+export const Selector = (props: { setter: Setter<string> }) => {
+  return (
+    <div class="flex flex-col gap-4 bg-gray-100 h-full w-full py-3 px-2">
       <For each={opts}>
         {(item) => (
-          <button
-            onClick={() => props.setter(item)}
-            class={`
-              px-4 py-2 rounded-md transition-colors duration-200
-              ${props.selected === item
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}
-            `}
-          >
+          <span
+            onClick={() => { props.setter(item); }}
+            class="cursor-pointer text-lg font-medium px-4 py-2 rounded-md hover:bg-gray-200 transition">
             {item}
-          </button>
+          </span>
         )}
       </For>
     </div>
+  );
+};
+
+const Editor = <T extends { id: number },>(props: { value: T, push: (id: number, data: Partial<T> | string) => any, refetcher: (info?: unknown) => Data | Promise<Data> | null | undefined }) => {
+  const trigger = () => {
+    return (
+      <button
+        onClick={() => { updateLab(props.value.id, {}); }}
+        class="flex bg-yellow-200 text-yellow-800 px-4 py-2 rounded-md hover:bg-yellow-300 transition">
+        <FiTool />
+      </button>
+    )
+  }
+
+  const content = () => {
+    const [value, setValue] = createSignal(JSON.stringify(props.value, undefined, 2))
+    return (
+      <div class="flex flex-col gap-2">
+        <span>Edit</span>
+        <textarea value={value()} onInput={(e: any) => { setValue(e.target.value) }} class="bg-neutral-100 p-2 rounded-lg text-neutral-600" />
+        <button class="rounded-lg p-3 bg-sky-300 hover:bg-sky-400 transition-all mt-4 w-1/2 self-center" onClick={() => { props.push(props.value.id, value()); setTimeout(() => props.refetcher(), 300) }}>Push Changes</button>
+      </div>
+    )
+  }
+
+  const popupProps = {
+    trigger: trigger,
+    content: content
+  }
+
+  return (
+    <Popup {...popupProps} />
   )
 }
 
-const LabCard = (props: { lab: Lab }) => {
-  const { lab } = props;
+const Toggle = <T extends { id: number },>(props: { value: T, push: (id: number) => any, refetcher: (info?: unknown) => Data | Promise<Data> | null | undefined }) => {
+  const trigger = () => {
+    return (
+      <button
+        onClick={() => { updateLab(props.value.id, {}); }}
+        class="flex bg-neutral-300 text-neutral-800 px-4 py-2 rounded-md hover:bg-neutral-400 transition">
+        <CgUnavailable />
+      </button>
+    )
+  }
+
+  const content = () => {
+    return (
+      <div class="flex flex-col gap-2">
+        <span>Continuing will disable this entity for use. You can toggle this again anytime</span>
+        <button class="rounded-lg p-3 bg-sky-300 hover:bg-sky-400 transition-all mt-4 w-1/2 self-center" onClick={() => { props.push(props.value.id); setTimeout(() => props.refetcher(), 300) }}>Continue</button>
+      </div>
+    )
+  }
+
+  const popupProps = {
+    trigger: trigger,
+    content: content
+  }
+
   return (
-    <div class="bg-white shadow-md rounded-lg p-4 mb-3">
-      <div class="flex justify-between items-center mb-2">
-        <h3 class="text-lg font-semibold text-gray-800">{lab.name}</h3>
-        <span class="text-sm text-gray-500">{lab.id}</span>
-      </div>
-      <div class="grid grid-cols-2 gap-2">
-        <div>
-          <p class="text-sm text-gray-600">Name: {lab.name}</p>
-        </div>
-      </div>
-    </div>
+    <Popup {...popupProps} />
   )
 }
 
-const RoomCard = (props: { room: Room }) => {
-  const { room } = props;
+const Display = (props: { data: Data, current: string, refetcher: (info?: unknown) => Data | Promise<Data> | null | undefined }) => {
   return (
-    <div class="bg-white shadow-md rounded-lg p-4 mb-3">
-      <div class="flex justify-between items-center mb-2">
-        <h3 class="text-lg font-semibold text-gray-800">{room.name}</h3>
-        <span class="text-sm text-gray-500">{room.id}</span>
-      </div>
-    </div>
-  )
-}
-
-const Display = (props: { data: Data, current: string }) => {
-  return (
-    <div class="grid gap-4">
+    <div class="flex-1">
       <Show when={props.current === 'Labs'}>
-        <For each={props.data.labs}>
-          {(item) => <LabCard lab={item} />}
-        </For>
+        <div class="flex flex-col gap-6 overflow-y-auto h-full">
+          <For each={props.data.labs}>
+            {(item) => {
+              const keys = Object.keys(item);
+              const values = Object.values(item);
+              return (
+                <div
+                  class="flex flex-row items-center gap-4 rounded-lg bg-neutral-100 p-4 animate-fade-in-up"
+                >
+                  <div class="flex flex-col gap-1">
+                    <Index each={keys}>
+                      {(item, index) => (
+                        <span class="text-sm text-gray-600">{`${keys[index]}: ${values[index]}`}</span>
+                      )}
+                    </Index>
+                  </div>
+                  <div class="flex gap-2 ml-auto self-start ">
+                    <Editor value={item} push={updateLab} refetcher={props.refetcher} />
+                    <Toggle value={item} push={toggleLab} refetcher={props.refetcher} />
+                  </div>
+                </div>
+              );
+            }}
+          </For>
+        </div>
       </Show>
+
       <Show when={props.current === 'Rooms'}>
-        <For each={props.data.rooms}>
-          {(item) => <RoomCard room={item} />}
-        </For>
+        <div class="flex flex-col gap-6 overflow-y-auto h-full">
+          <For each={props.data.rooms}>
+            {(item) => {
+              const keys = Object.keys(item);
+              const values = Object.values(item);
+              return (
+                <div
+                  class="flex flex-row items-center gap-4 rounded-lg bg-neutral-100 p-4 animate-fade-in-up"
+                >
+                  <div class="flex flex-col gap-1">
+                    <Index each={keys}>
+                      {(item, index) => (
+                        <span class="text-sm text-gray-600">{`${keys[index]}: ${values[index]}`}</span>
+                      )}
+                    </Index>
+                  </div>
+                  <div class="flex gap-2 ml-auto self-start ">
+                    <Editor value={item} push={updateRoom} refetcher={props.refetcher} />
+                    <Toggle value={item} push={toggleRoom} refetcher={props.refetcher} />
+                  </div>
+                </div>
+              );
+            }}
+          </For>
+        </div>
       </Show>
     </div>
-  )
-}
+  );
+};
 
-export const Manager = () => {
+const Root = () => {
   const [selected, setSelected] = createSignal('Labs');
-  const [data] = createResource(read, { initialValue: { labs: [], rooms: [] } })
-
+  const [data, { mutate, refetch }] = createResource(read, { initialValue: { labs: [], rooms: [] } });
   return (
-    <div class="max-w-2xl mx-auto p-6 bg-gray-50 min-h-screen">
-      <h1 class="text-2xl font-bold mb-6 text-gray-900">Facility Management</h1>
-      <Selector setter={setSelected} selected={selected()} />
-      <Show
-        when={!data.loading}
-        fallback={<div class="text-center text-gray-600">Loading...</div>}
-      >
-        <Display data={data()} current={selected()} />
-      </Show>
+    <div class="flex flex-row bg-neutral-100 rounded-lg w-[90vw] h-[75vh] mt-2">
+      <div class="flex w-1/4 h-full">
+        <Selector setter={setSelected} />
+      </div>
+      <div class="flex-1 bg-neutral-50 rounded-lg p-6 h-full overflow-auto">
+        <Show when={data.state === 'ready'}>
+          <Display data={data()} current={selected()} refetcher={refetch} />
+        </Show>
+      </div>
     </div>
-  )
-}
+  );
+};

@@ -10,6 +10,7 @@ import { Toast, Toaster } from "@ark-ui/solid";
 import { toaster, ToasterElement } from "./components/ui/Toast";
 import { Computers } from "./components/Computers";
 import { Manager } from "./components/Manager";
+import { Loading } from "./components/Loading";
 
 const base = "relative bg-white min-h-screen min-w-screen flex flex-col"
 const inner = "flex-1 w-full flex flex-col items-center justify-center"

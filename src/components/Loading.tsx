@@ -1,10 +1,13 @@
-import HuoHuo from "./huo.gif";
 import { Component } from "solid-js";
+import { ThreeDots } from "solid-spinner";
+import { overlay } from "./ui/styles/Loading";
 
 export const Loading: Component = () => {
   return (
-    <div>
-      <img src={HuoHuo} alt="Loading" class="w-96" />
-    </div>
+    <>
+      <div class={overlay}>
+        <ThreeDots color="#FF0000" />
+      </div>
+    </>
   );
 }

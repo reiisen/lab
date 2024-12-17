@@ -1,4 +1,4 @@
-import { Computer, Lab, Reserve, Room } from "./types";
+import { Computer, Lab, Reserve, Room, WithInactive } from "./types";
 const offset = 0;
 
 export async function createLab(lab: Omit<Lab, "id">): Promise<boolean> {
@@ -51,7 +51,27 @@ export async function readLabs(): Promise<Lab[]> {
   return response.json();
 }
 
+export async function readLabsWithInactive(): Promise<WithInactive<Lab>[]> {
+  const response = await fetch("http://127.0.0.1:8000/lab/", {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "GET",
+  });
+  return response.json();
+}
+
 export async function readRooms(): Promise<Room[]> {
+  const response = await fetch("http://127.0.0.1:8000/room/", {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "GET",
+  });
+  return response.json();
+}
+
+export async function readRoomsWithInactive(): Promise<WithInactive<Room>[]> {
   const response = await fetch("http://127.0.0.1:8000/room/", {
     headers: {
       "Content-Type": "application/json",
@@ -75,6 +95,19 @@ export async function readComputers(source: number): Promise<Computer[]> {
   return response.json();
 }
 
+export async function readComputersWithInactive(source: number): Promise<WithInactive<Computer>[]> {
+  const filter = {
+    labId: source
+  };
+  const response = await fetch("http://127.0.0.1:8000/computer/filter", {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+    body: JSON.stringify(filter)
+  });
+  return response.json();
+}
 
 export async function readIncompleteReserves(source: {
   labId?: number,
@@ -174,6 +207,78 @@ export async function readReserves(source: {
     },
     method: "POST",
     body: JSON.stringify(filter),
+  });
+  return response.json();
+}
+
+export async function updateLab(id: number, data: Partial<Lab> | string) {
+  const response = await fetch(`http://127.0.0.1:8000/lab/${id}/update`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+    body: typeof data === 'string' ? data : JSON.stringify(data)
+  });
+  return response.json();
+}
+
+export async function updateRoom(id: number, data: Partial<Room> | string) {
+  const response = await fetch(`http://127.0.0.1:8000/lab/${id}/update`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+    body: typeof data === 'string' ? data : JSON.stringify(data)
+  });
+  return response.json();
+}
+
+export async function deleteLab(id: number) {
+  const response = await fetch(`http://127.0.0.1:8000/lab/${id}/remove`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "GET"
+  });
+  return response.json();
+}
+
+export async function deleteRoom(id: number) {
+  const response = await fetch(`http://127.0.0.1:8000/room/${id}/remove`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "GET"
+  });
+  return response.json();
+}
+
+export async function toggleLab(id: number) {
+  const response = await fetch(`http://127.0.0.1:8000/lab/${id}/toggle`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST"
+  });
+  return response.json();
+}
+
+export async function toggleComputer(id: number) {
+  const response = await fetch(`http://127.0.0.1:8000/computer/${id}/toggle`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST"
+  });
+  return response.json();
+}
+
+export async function toggleRoom(id: number) {
+  const response = await fetch(`http://127.0.0.1:8000/room/${id}/toggle`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST"
   });
   return response.json();
 }
