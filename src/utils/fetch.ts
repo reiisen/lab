@@ -1,15 +1,18 @@
 import { Computer, Lab, Reserve, Room, Timestamp, WithInactive, WithTimestamp } from "./types";
 const offset = 0;
 
+const baseUrl = import.meta.env.VITE_API_URL;
+
 function shallow<T,>(obj: WithTimestamp<T>): T {
   const { createdAt, updatedAt, ...t } = obj;
   return t as T;
 }
 
 export async function createLab(lab: Omit<Lab, "id">): Promise<boolean> {
+  const url = new URL(`/lab/create`, baseUrl);
   let response;
   try {
-    response = await fetch("http://127.0.0.1:8000/lab/create", {
+    response = await fetch(url.toString(), {
       headers: {
         "Content-Type": "application/json",
       },
@@ -28,10 +31,11 @@ export async function createLab(lab: Omit<Lab, "id">): Promise<boolean> {
 export async function createReserve(
   reserve: Omit<Reserve, "id" | "status">
 ): Promise<boolean> {
+  const url = new URL(`/reserve/create`, baseUrl);
   const date = new Date(reserve.date);
   console.log(date);
   date.setDate(date.getDate() + offset);
-  const response = await fetch("http://127.0.0.1:8000/reserve/create", {
+  const response = await fetch(url.toString(), {
     headers: {
       "Content-Type": "application/json",
     },
@@ -47,7 +51,8 @@ export async function createReserve(
 }
 
 export async function readLabs(): Promise<Lab[]> {
-  const response = await fetch("http://127.0.0.1:8000/lab/", {
+  const url = new URL(`/lab/`, baseUrl);
+  const response = await fetch(url.toString(), {
     headers: {
       "Content-Type": "application/json",
     },
@@ -57,7 +62,8 @@ export async function readLabs(): Promise<Lab[]> {
 }
 
 export async function readLabsWithInactive(): Promise<WithInactive<Lab>[]> {
-  const response = await fetch("http://127.0.0.1:8000/lab/", {
+  const url = new URL(`/lab/`, baseUrl);
+  const response = await fetch(url.toString(), {
     headers: {
       "Content-Type": "application/json",
     },
@@ -67,7 +73,8 @@ export async function readLabsWithInactive(): Promise<WithInactive<Lab>[]> {
 }
 
 export async function readRooms(): Promise<Room[]> {
-  const response = await fetch("http://127.0.0.1:8000/room/", {
+  const url = new URL(`/room/`, baseUrl);
+  const response = await fetch(url.toString(), {
     headers: {
       "Content-Type": "application/json",
     },
@@ -77,7 +84,8 @@ export async function readRooms(): Promise<Room[]> {
 }
 
 export async function readRoomsWithInactive(): Promise<WithInactive<Room>[]> {
-  const response = await fetch("http://127.0.0.1:8000/room/", {
+  const url = new URL(`/room/`, baseUrl);
+  const response = await fetch(url.toString(), {
     headers: {
       "Content-Type": "application/json",
     },
@@ -87,10 +95,11 @@ export async function readRoomsWithInactive(): Promise<WithInactive<Room>[]> {
 }
 
 export async function readComputers(source: number): Promise<Computer[]> {
+  const url = new URL(`/computer/filter`, baseUrl);
   const filter = {
     labId: source
   };
-  const response = await fetch("http://127.0.0.1:8000/computer/filter", {
+  const response = await fetch(url.toString(), {
     headers: {
       "Content-Type": "application/json",
     },
@@ -101,10 +110,11 @@ export async function readComputers(source: number): Promise<Computer[]> {
 }
 
 export async function readComputersWithInactive(source: number): Promise<WithInactive<Computer>[]> {
+  const url = new URL(`/computer/filter`, baseUrl);
   const filter = {
     labId: source
   };
-  const response = await fetch("http://127.0.0.1:8000/computer/filter", {
+  const response = await fetch(url.toString(), {
     headers: {
       "Content-Type": "application/json",
     },
@@ -120,6 +130,7 @@ export async function readIncompleteReserves(source: {
   roomId?: number,
   date: Date
 }): Promise<Reserve[]> {
+  const url = new URL(`/reserve/filter`, baseUrl);
   const min = new Date(source.date);
   const max = new Date(source.date);
   min.setHours(0);
@@ -138,7 +149,7 @@ export async function readIncompleteReserves(source: {
       in: ["PENDING", "ACTIVE"],
     },
   };
-  const response = await fetch("http://127.0.0.1:8000/reserve/filter", {
+  const response = await fetch(url.toString(), {
     headers: {
       "Content-Type": "application/json",
     },
@@ -154,6 +165,7 @@ export async function readCompleteReserves(source: {
   roomId?: number,
   date: Date
 }): Promise<Reserve[]> {
+  const url = new URL(`/reserve/filter`, baseUrl);
   const min = new Date(source.date);
   const max = new Date(source.date);
   min.setHours(0);
@@ -172,7 +184,7 @@ export async function readCompleteReserves(source: {
       in: ["CONCLUDED", "CANCELLED"],
     },
   };
-  const response = await fetch("http://127.0.0.1:8000/reserve/filter", {
+  const response = await fetch(url.toString(), {
     headers: {
       "Content-Type": "application/json",
     },
@@ -188,6 +200,7 @@ export async function readReserves(source: {
   roomId?: number,
   date: Date
 }): Promise<Reserve[]> {
+  const url = new URL(`/reserve/filter`, baseUrl);
   const min = new Date(source.date);
   const max = new Date(source.date);
   min.setHours(0);
@@ -206,7 +219,7 @@ export async function readReserves(source: {
       in: ["PENDING", "ACTIVE", "CONCLUDED", "CANCELLED"],
     },
   };
-  const response = await fetch("http://127.0.0.1:8000/reserve/filter", {
+  const response = await fetch(url.toString(), {
     headers: {
       "Content-Type": "application/json",
     },
@@ -221,11 +234,12 @@ export async function updateLab(
   data: Partial<Lab> | string,
   shallowed?: boolean
 ) {
+  const url = new URL(`/lab/${id}/update`, baseUrl);
   if (shallowed && typeof data !== "string") {
     data = shallow<Partial<Lab>>(data as WithTimestamp<Partial<Lab>>);
   }
 
-  const response = await fetch(`http://127.0.0.1:8000/lab/${id}/update`, {
+  const response = await fetch(url.toString(), {
     headers: {
       "Content-Type": "application/json",
     },
@@ -241,11 +255,12 @@ export async function updateRoom(
   data: Partial<Room> | string,
   shallowed?: boolean
 ) {
+  const url = new URL(`/room/${id}/update`, baseUrl);
   if (shallowed && typeof data !== "string") {
     data = shallow<Partial<Room>>(data as WithTimestamp<Partial<Room>>);
   }
 
-  const response = await fetch(`http://127.0.0.1:8000/lab/${id}/update`, {
+  const response = await fetch(url.toString(), {
     headers: {
       "Content-Type": "application/json",
     },
@@ -257,7 +272,8 @@ export async function updateRoom(
 }
 
 export async function deleteLab(id: number) {
-  const response = await fetch(`http://127.0.0.1:8000/lab/${id}/remove`, {
+  const url = new URL(`/lab/${id}/remove`, baseUrl);
+  const response = await fetch(url.toString(), {
     headers: {
       "Content-Type": "application/json",
     },
@@ -267,7 +283,8 @@ export async function deleteLab(id: number) {
 }
 
 export async function deleteRoom(id: number) {
-  const response = await fetch(`http://127.0.0.1:8000/room/${id}/remove`, {
+  const url = new URL(`/room/${id}/remove`, baseUrl);
+  const response = await fetch(url.toString(), {
     headers: {
       "Content-Type": "application/json",
     },
@@ -277,19 +294,23 @@ export async function deleteRoom(id: number) {
 }
 
 export async function toggleLab(id: number): Promise<void> {
-  const response = await fetch(`http://127.0.0.1:8000/lab/${id}/toggle`, {
+  const url = new URL(`/lab/${id}/toggle`, baseUrl);
+
+  const response = await fetch(url.toString(), {
     method: "POST"
   });
 }
 
 export async function toggleComputer(id: number): Promise<void> {
-  const response = await fetch(`http://127.0.0.1:8000/computer/${id}/toggle`, {
+  const url = new URL(`/computer/${id}/toggle`, baseUrl);
+  const response = await fetch(url.toString(), {
     method: "POST"
   });
 }
 
 export async function toggleRoom(id: number): Promise<void> {
-  const response = await fetch(`http://127.0.0.1:8000/room/${id}/toggle`, {
+  const url = new URL(`/room/${id}/toggle`, baseUrl);
+  const response = await fetch(url.toString(), {
     method: "POST"
   });
 }
