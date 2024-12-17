@@ -1,11 +1,12 @@
-import { createResource, createSignal, For, Index, Setter, Show, Signal } from "solid-js"
+import { Component, createResource, createSignal, For, Index, Setter, Show, Signal } from "solid-js"
 import { deleteLab, deleteRoom, readLabs, readRooms, toggleLab, toggleRoom, updateLab, updateRoom } from "../utils/fetch"
-import { Lab, Room } from "../utils/types"
+import { Lab, Room, WithInactive } from "../utils/types"
 import { FiTool, FiTrash2 } from "solid-icons/fi";
 import { CgUnavailable } from 'solid-icons/cg'
 import { Editable } from "./ui/Editable";
 import { Popup } from "./ui/Popup";
 import { Portal } from "solid-js/web";
+import { FaSolidCheck } from "solid-icons/fa";
 
 const opts = ['Labs', 'Rooms'];
 
@@ -43,11 +44,10 @@ export const Selector = (props: { setter: Setter<string> }) => {
   );
 };
 
-const Editor = <T extends { id: number },>(props: { value: T, push: (id: number, data: Partial<T> | string) => any, refetcher: (info?: unknown) => Data | Promise<Data> | null | undefined }) => {
+const Editor = <T extends { id: number },>(props: { value: T, push: (id: number, data: Partial<T> | string, shallowed?: boolean) => any, refetcher: (info?: unknown) => Data | Promise<Data> | null | undefined }) => {
   const trigger = () => {
     return (
       <button
-        onClick={() => { updateLab(props.value.id, {}); }}
         class="flex bg-yellow-200 text-yellow-800 px-4 py-2 rounded-md hover:bg-yellow-300 transition">
         <FiTool />
       </button>
@@ -60,7 +60,7 @@ const Editor = <T extends { id: number },>(props: { value: T, push: (id: number,
       <div class="flex flex-col gap-2">
         <span>Edit</span>
         <textarea value={value()} onInput={(e: any) => { setValue(e.target.value) }} class="bg-neutral-100 p-2 rounded-lg text-neutral-600" />
-        <button class="rounded-lg p-3 bg-sky-300 hover:bg-sky-400 transition-all mt-4 w-1/2 self-center" onClick={() => { props.push(props.value.id, value()); setTimeout(() => props.refetcher(), 300) }}>Push Changes</button>
+        <button class="rounded-lg p-3 bg-sky-300 hover:bg-sky-400 transition-all mt-4 w-1/2 self-center" onClick={async () => { await props.push(props.value.id, value(), true); props.refetcher() }}>Push Changes</button>
       </div>
     )
   }
@@ -75,14 +75,31 @@ const Editor = <T extends { id: number },>(props: { value: T, push: (id: number,
   )
 }
 
-const Toggle = <T extends { id: number },>(props: { value: T, push: (id: number) => any, refetcher: (info?: unknown) => Data | Promise<Data> | null | undefined }) => {
+const Toggle = <T extends { id: number, inactive: boolean },>(props: { value: T, push: (id: number) => any, refetcher: (info?: unknown) => Data | Promise<Data> | null | undefined }) => {
+  let Button: Component
+  if (!props.value.inactive) {
+    Button = () => {
+      return (
+        <button
+          class="flex bg-red-300 text-neutral-800 px-4 py-2 rounded-md hover:bg-red-400 transition">
+          <CgUnavailable color="#AA0000" />
+        </button>
+      )
+    }
+  } else {
+    Button = () => {
+      return (
+        <button
+          class="flex bg-green-300 text-neutral-800 px-4 py-2 rounded-md hover:bg-green-400 transition">
+          <FaSolidCheck color="#00AA00" />
+        </button>
+      )
+    }
+  }
+
   const trigger = () => {
     return (
-      <button
-        onClick={() => { updateLab(props.value.id, {}); }}
-        class="flex bg-neutral-300 text-neutral-800 px-4 py-2 rounded-md hover:bg-neutral-400 transition">
-        <CgUnavailable />
-      </button>
+      <Button />
     )
   }
 
@@ -90,7 +107,7 @@ const Toggle = <T extends { id: number },>(props: { value: T, push: (id: number)
     return (
       <div class="flex flex-col gap-2">
         <span>Continuing will disable this entity for use. You can toggle this again anytime</span>
-        <button class="rounded-lg p-3 bg-sky-300 hover:bg-sky-400 transition-all mt-4 w-1/2 self-center" onClick={() => { props.push(props.value.id); setTimeout(() => props.refetcher(), 300) }}>Continue</button>
+        <button class="rounded-lg p-3 bg-sky-300 hover:bg-sky-400 transition-all mt-4 w-1/2 self-center" onClick={async () => { await props.push(props.value.id); props.refetcher() }}>Continue</button>
       </div>
     )
   }
@@ -127,7 +144,7 @@ const Display = (props: { data: Data, current: string, refetcher: (info?: unknow
                   </div>
                   <div class="flex gap-2 ml-auto self-start ">
                     <Editor value={item} push={updateLab} refetcher={props.refetcher} />
-                    <Toggle value={item} push={toggleLab} refetcher={props.refetcher} />
+                    <Toggle value={item as WithInactive<Lab>} push={toggleLab} refetcher={props.refetcher} />
                   </div>
                 </div>
               );
@@ -155,7 +172,7 @@ const Display = (props: { data: Data, current: string, refetcher: (info?: unknow
                   </div>
                   <div class="flex gap-2 ml-auto self-start ">
                     <Editor value={item} push={updateRoom} refetcher={props.refetcher} />
-                    <Toggle value={item} push={toggleRoom} refetcher={props.refetcher} />
+                    <Toggle value={item as WithInactive<Room>} push={toggleRoom} refetcher={props.refetcher} />
                   </div>
                 </div>
               );

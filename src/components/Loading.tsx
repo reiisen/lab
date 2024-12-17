@@ -6,7 +6,7 @@ export const Loading: Component = () => {
   return (
     <>
       <div class={overlay}>
-        <ThreeDots color="#FF0000" />
+        <ThreeDots color="#FFFFFF" />
       </div>
     </>
   );

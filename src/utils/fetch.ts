@@ -1,5 +1,10 @@
-import { Computer, Lab, Reserve, Room, WithInactive } from "./types";
+import { Computer, Lab, Reserve, Room, Timestamp, WithInactive, WithTimestamp } from "./types";
 const offset = 0;
+
+function shallow<T,>(obj: WithTimestamp<T>): T {
+  const { createdAt, updatedAt, ...t } = obj;
+  return t as T;
+}
 
 export async function createLab(lab: Omit<Lab, "id">): Promise<boolean> {
   let response;
@@ -211,25 +216,43 @@ export async function readReserves(source: {
   return response.json();
 }
 
-export async function updateLab(id: number, data: Partial<Lab> | string) {
+export async function updateLab(
+  id: number,
+  data: Partial<Lab> | string,
+  shallowed?: boolean
+) {
+  if (shallowed && typeof data !== "string") {
+    data = shallow<Partial<Lab>>(data as WithTimestamp<Partial<Lab>>);
+  }
+
   const response = await fetch(`http://127.0.0.1:8000/lab/${id}/update`, {
     headers: {
       "Content-Type": "application/json",
     },
     method: "POST",
-    body: typeof data === 'string' ? data : JSON.stringify(data)
+    body: typeof data === "string" ? data : JSON.stringify(data),
   });
+
   return response.json();
 }
 
-export async function updateRoom(id: number, data: Partial<Room> | string) {
+export async function updateRoom(
+  id: number,
+  data: Partial<Room> | string,
+  shallowed?: boolean
+) {
+  if (shallowed && typeof data !== "string") {
+    data = shallow<Partial<Room>>(data as WithTimestamp<Partial<Room>>);
+  }
+
   const response = await fetch(`http://127.0.0.1:8000/lab/${id}/update`, {
     headers: {
       "Content-Type": "application/json",
     },
     method: "POST",
-    body: typeof data === 'string' ? data : JSON.stringify(data)
+    body: typeof data === "string" ? data : JSON.stringify(data),
   });
+
   return response.json();
 }
 
@@ -253,32 +276,20 @@ export async function deleteRoom(id: number) {
   return response.json();
 }
 
-export async function toggleLab(id: number) {
+export async function toggleLab(id: number): Promise<void> {
   const response = await fetch(`http://127.0.0.1:8000/lab/${id}/toggle`, {
-    headers: {
-      "Content-Type": "application/json",
-    },
     method: "POST"
   });
-  return response.json();
 }
 
-export async function toggleComputer(id: number) {
+export async function toggleComputer(id: number): Promise<void> {
   const response = await fetch(`http://127.0.0.1:8000/computer/${id}/toggle`, {
-    headers: {
-      "Content-Type": "application/json",
-    },
     method: "POST"
   });
-  return response.json();
 }
 
-export async function toggleRoom(id: number) {
+export async function toggleRoom(id: number): Promise<void> {
   const response = await fetch(`http://127.0.0.1:8000/room/${id}/toggle`, {
-    headers: {
-      "Content-Type": "application/json",
-    },
     method: "POST"
   });
-  return response.json();
 }

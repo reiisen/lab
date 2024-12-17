@@ -35,7 +35,7 @@ export interface Reserve {
   date: Date;
 }
 
-export interface Timestamp {
+export type Timestamp = {
   createdAt: Date
   updatedAt: Date
 }
