@@ -3,7 +3,7 @@ export const overlay = `
   flex
   justify-center items-center
   left-0 top-0
-  w-screen h-screen
+  w-[105vw] h-[105vh]
   -translate-x-1 -translate-y-1
   backdrop-brightness-75
 `;

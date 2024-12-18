@@ -36,7 +36,7 @@ export const Popup = (props: PopupProps) => {
   return (
     <>
       <div
-        class="cursor-pointer"
+        class={`cursor-pointer`}
         onClick={
           () => {
             setOpen(true);
@@ -48,7 +48,8 @@ export const Popup = (props: PopupProps) => {
             };
 
             document.addEventListener('keydown', handleEscape);
-          }}>
+          }}
+      >
         <props.trigger />
       </div>
       <PopupRoot title={props.title} openSignal={[open, setOpen]}>{() => <props.content />}</PopupRoot>

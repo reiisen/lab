@@ -38,7 +38,7 @@ export const Slots: Component = () => {
   //   date: date(),
   // });
 
-  const currentYear = new Date().getFullYear();
+  const currentDate = new Date();
 
   const [data, { mutate, refetch }] = createResource(filter, readIncompleteReserves);
 
@@ -81,8 +81,8 @@ export const Slots: Component = () => {
       selectedDate={date()}
       onChange={(date) => { setDate(date); refetch(); }}
       onFooterDone={() => setOpen(false)}
-      startYear={currentYear}
-      endYear={currentYear + 3}
+      startYear={currentDate.getFullYear()}
+      endYear={currentDate.getFullYear() + 3}
     />;
 
   createMemo(() => setFilter({
