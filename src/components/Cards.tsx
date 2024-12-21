@@ -81,8 +81,8 @@ export const VacantCard = (props: { index: number, filter: Filter, onClick?: Fun
   const FormPopup: Component = () => {
     return (
       <div class={formContainer}>
-        <Input signal={[nim, setNim]} label="NIM" />
-        <Input signal={[reason, setReason]} label="Tujuan" />
+        <Input signal={[nim, setNim]} label="NPP/NIM" />
+        <Input signal={[reason, setReason]} label="Hal/Keperluan" />
         <button onClick={async () => {
           const result = await createReserve(
             {
